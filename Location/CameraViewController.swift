@@ -192,7 +192,7 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, A
         let region = CLCircularRegion(center: CLLocationCoordinate2D(latitude: lat, longitude: longi), radius: 25, identifier: "test")
 
         
-        self.appDelegate.ref.child("Regions").observeSingleEvent(of: .value) { snapshot in
+        AppDelegate.ref.child("Regions").observeSingleEvent(of: .value) { snapshot in
             print("\(String(describing:  snapshot.value))")
             if let tempDic : Dictionary = snapshot.value as? Dictionary<String,Any> {
                 print(tempDic)
@@ -218,7 +218,7 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, A
                     //self.scheduleLocalNotification(alert: "data", identifier: "FenceCreate", imageURLS: imgURLS)
                 } else {
                     let uuid = self.generateUuid()
-                        self.appDelegate.ref.child("Regions").childByAutoId().setValue([
+                        AppDelegate.ref.child("Regions").childByAutoId().setValue([
                             "Latitude"      : lat,
                             "Longitude"    : longi,
                             "timestamp"     : NSDate().timeIntervalSince1970,
@@ -245,7 +245,7 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, A
  
             } else {
                 let uuid = self.generateUuid()
-                    self.appDelegate.ref.child("Regions").childByAutoId().setValue([
+                    AppDelegate.ref.child("Regions").childByAutoId().setValue([
                         "Latitude"      : lat,
                         "Longitude"    : longi,
                         "timestamp"     : NSDate().timeIntervalSince1970,
@@ -281,7 +281,7 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, A
         
         // self.ref.child("users/\(user.uid)/username").setValue(username)
         //            childByAutoId().key
-        appDelegate.ref.child("Posts").childByAutoId().setValue([
+        AppDelegate.ref.child("Posts").childByAutoId().setValue([
             //                "Latitude"      : locationServiceObject.myLocation?.coordinate.latitude ?? 0.0,
             //                "Longitude"    : locationServiceObject.myLocation?.coordinate.longitude ?? 0.0,
             "timestamp"     : NSDate().timeIntervalSince1970,

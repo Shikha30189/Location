@@ -62,7 +62,7 @@ final class LocationService: NSObject {
         manager.delegate = self
         manager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters
         manager.requestWhenInUseAuthorization()
-        manager.stopMonitoringSignificantLocationChanges()
+//        manager.stopMonitoringSignificantLocationChanges()
         if CLLocationManager.locationServicesEnabled() {
             manager.startUpdatingLocation()
             //locationManager.startUpdatingHeading()
@@ -109,7 +109,7 @@ final class LocationService: NSObject {
     }
     
     func fetchServerRegionToBeMonitored(region: CLCircularRegion) {
-        self.appDelegate.ref.child("Regions").observeSingleEvent(of: .value) { snapshot in
+        AppDelegate.ref.child("Regions").observeSingleEvent(of: .value) { snapshot in
             print("\(String(describing:  snapshot.value))")
             if let tempDic : Dictionary = snapshot.value as? Dictionary<String,Any> {
                 print(tempDic)
@@ -133,7 +133,7 @@ final class LocationService: NSObject {
     
     
     func fetchDataInRegion(regionIdentifier: String) {
-        self.appDelegate.ref.child("Posts").queryOrdered(byChild: "regionid").queryEqual(toValue : regionIdentifier).observeSingleEvent(of: .value) { snapshot in
+        AppDelegate.ref.child("Posts").queryOrdered(byChild: "regionid").queryEqual(toValue : regionIdentifier).observeSingleEvent(of: .value) { snapshot in
             print("\(String(describing:  snapshot.value))")
             var imgURLS = [String]()
             if let tempDic : Dictionary = snapshot.value as? Dictionary<String,Any> {
@@ -196,19 +196,69 @@ final class LocationService: NSObject {
     func locationManager(_ manager: CLLocationManager, didEnterRegion region: CLRegion) {
         if region.identifier != localFence {
             /// fetch images data
+            
+            UIApplication.shared.beginBackgroundTask(withName: "Fetch Data", expirationHandler: {
+                UIApplication.shared.endBackgroundTask(AppDelegate.backgroundDataTaskId)
+                AppDelegate.backgroundDataTaskId = .invalid
+            })
+        
             fetchDataInRegion(regionIdentifier: region.identifier)
+            UIApplication.shared.endBackgroundTask(AppDelegate.backgroundDataTaskId)
+            AppDelegate.backgroundDataTaskId = .invalid
+            
+            
         } else {
             if let cordinates = myLocation {
                // addViewOnWindow(text: "Enter region")
 
-                //scheduleLocalNotification(alert: "didEnterRegion ====\(region.identifier)===Lat=====\(cordinates.coordinate.latitude)====Long=====\(cordinates.coordinate.longitude)", imageURLS: nil)
+                scheduleLocalNotification(alert: "didEnterRegion ====\(region.identifier)===Lat=====\(cordinates.coordinate.latitude)====Long=====\(cordinates.coordinate.longitude)", imageURLS: nil)
             } else {
-                //scheduleLocalNotification(alert: "didEnterRegion ====\(region.identifier)", imageURLS: nil)
+                scheduleLocalNotification(alert: "didEnterRegion ====\(region.identifier)", imageURLS: nil)
             }
         }
     }
     
+    func locationManager(_ manager: CLLocationManager, didExitRegion region: CLRegion) {
+            
+            if region.identifier == localFence {
+                manager.startUpdatingLocation()
+                var isRegionCreated = true
+                onLocationFetched = { location in
+                    if let loc = self.myLocation {
+                        if isRegionCreated {
+                            DispatchQueue.global().async {
+                                
+                                // Request the task assertion and save the ID.
+                                AppDelegate.backgroundTaskId = UIApplication.shared.beginBackgroundTask(withName: "Fetch Regions", expirationHandler: {
+                                    UIApplication.shared.endBackgroundTask(AppDelegate.backgroundTaskId)
+                                    AppDelegate.backgroundTaskId = .invalid
+                                })
+                                
+                                for region in manager.monitoredRegions {
+                                    manager.stopMonitoring(for: region)
+                                }
+                                self.createRegion(coordinate: loc.coordinate)
+                                    UIApplication.shared.endBackgroundTask(AppDelegate.backgroundTaskId)
+                                    AppDelegate.backgroundTaskId = .invalid
+                                isRegionCreated = false
+                            }
+                        }
+                    }
+                    
+                }
+                
+                if let cordinates = myLocation {
+                    addViewOnWindow(text: "Exit region")
+                    scheduleLocalNotification(alert: "ndidExitRegion ====\(region.identifier) ===Lat=====\(cordinates.coordinate.latitude)====Long=====\(cordinates.coordinate.longitude)", imageURLS: nil)
+                    
+                } else {
+                    scheduleLocalNotification(alert: "ndidExitRegion ====\(region.identifier)", imageURLS: nil)
+                }
 
+            }
+        }
+    
+/*
     func locationManager(_ manager: CLLocationManager, didExitRegion region: CLRegion) {
         
         if region.identifier == localFence {
@@ -216,31 +266,42 @@ final class LocationService: NSObject {
             manager.startUpdatingLocation()
             if let cordinates = myLocation {
                 addViewOnWindow(text: "Exit region")
-                //scheduleLocalNotification(alert: "ndidExitRegion ====\(region.identifier) ===Lat=====\(cordinates.coordinate.latitude)====Long=====\(cordinates.coordinate.longitude)", imageURLS: nil)
+                scheduleLocalNotification(alert: "ndidExitRegion ====\(region.identifier) ===Lat=====\(cordinates.coordinate.latitude)====Long=====\(cordinates.coordinate.longitude)", imageURLS: nil)
                 
             } else {
-                //scheduleLocalNotification(alert: "ndidExitRegion ====\(region.identifier)", imageURLS: nil)
+                scheduleLocalNotification(alert: "ndidExitRegion ====\(region.identifier)", imageURLS: nil)
                 
             }
             
-            onLocationFetched = { location in
-                if isCreateRegion {
-                    if let loc = self.myLocation {
-                        for region in manager.monitoredRegions {
-                            manager.stopMonitoring(for: region)
+            
+            DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
+                        if let loc = self.myLocation {
+                            for region in manager.monitoredRegions {
+                                manager.stopMonitoring(for: region)
+                            }
+                            self.createRegion(coordinate: loc.coordinate)
                         }
-                        self.createRegion(coordinate: loc.coordinate)
-                        isCreateRegion = false
                     }
-                }
-                
-            }
+            
+//            onLocationFetched = { location in
+//                if isCreateRegion {
+//                    if let loc = self.myLocation {
+//                        for region in manager.monitoredRegions {
+//                            manager.stopMonitoring(for: region)
+//                        }
+//                        self.createRegion(coordinate: loc.coordinate)
+//                        isCreateRegion = false
+//                    }
+//                }
+//
+//            }
 
         } else {
             
         }
         
     }
+ */
     
     func locationManager(_ manager: CLLocationManager, monitoringDidFailFor region: CLRegion?, withError error: Error) {
         //locationTextView.text += "\nRegion Error====\(error.localizedDescription)"
