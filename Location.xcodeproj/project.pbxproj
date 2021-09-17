@@ -24,6 +24,7 @@
 		A72571A326B7A7B6008F2152 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = A72571A226B7A7B6008F2152 /* GoogleService-Info.plist */; };
 		A72571A526BAB67C008F2152 /* GalleryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A72571A426BAB67C008F2152 /* GalleryViewController.swift */; };
 		A72571C726CB67F0008F2152 /* AsyncTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = A72571C626CB67EF008F2152 /* AsyncTask.swift */; };
+		A72571E926F1C916008F2152 /* RadiusViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A72571E826F1C916008F2152 /* RadiusViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -69,6 +70,7 @@
 		A72571A226B7A7B6008F2152 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		A72571A426BAB67C008F2152 /* GalleryViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GalleryViewController.swift; sourceTree = "<group>"; };
 		A72571C626CB67EF008F2152 /* AsyncTask.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AsyncTask.swift; sourceTree = "<group>"; };
+		A72571E826F1C916008F2152 /* RadiusViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RadiusViewController.swift; sourceTree = "<group>"; };
 		B20467560B6763AFE1B8719C /* Pods-Location.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Location.release.xcconfig"; path = "Target Support Files/Pods-Location/Pods-Location.release.xcconfig"; sourceTree = "<group>"; };
 		BA980BD6996705D0102C044C /* Pods-LocationTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-LocationTests.release.xcconfig"; path = "Target Support Files/Pods-LocationTests/Pods-LocationTests.release.xcconfig"; sourceTree = "<group>"; };
 		C2CA763B74ECE9267F3D0B24 /* Pods_LocationTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_LocationTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -151,6 +153,7 @@
 				A71A4A1E26AF281D0023CF5D /* LocationService.swift */,
 				A72571A226B7A7B6008F2152 /* GoogleService-Info.plist */,
 				A72571A426BAB67C008F2152 /* GalleryViewController.swift */,
+				A72571E826F1C916008F2152 /* RadiusViewController.swift */,
 			);
 			path = Location;
 			sourceTree = "<group>";
@@ -429,6 +432,7 @@
 				A72571A526BAB67C008F2152 /* GalleryViewController.swift in Sources */,
 				A72571A126B63C21008F2152 /* HomeTabbarControllerViewController.swift in Sources */,
 				A72571C726CB67F0008F2152 /* AsyncTask.swift in Sources */,
+				A72571E926F1C916008F2152 /* RadiusViewController.swift in Sources */,
 				A71A49AB26981FE80023CF5D /* AppDelegate.swift in Sources */,
 				A71A4A1F26AF281D0023CF5D /* LocationService.swift in Sources */,
 				A71A4A1B26AF22680023CF5D /* CameraViewController.swift in Sources */,
@@ -538,7 +542,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.5;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -593,7 +597,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.5;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;

@@ -83,6 +83,9 @@ PODS:
     - SDWebImage/Core (= 5.11.1)
   - SDWebImage/Core (5.11.1)
   - SwiftKeychainWrapper (4.0.1)
+  - SwiftLocation/BeaconBroadcaster (5.1.0):
+    - SwiftLocation/Core
+  - SwiftLocation/Core (5.1.0)
   - SwiftPhotoGallery (3.4.1)
 
 DEPENDENCIES:
@@ -94,6 +97,8 @@ DEPENDENCIES:
   - IQKeyboardManagerSwift
   - SDWebImage (~> 5.0)
   - SwiftKeychainWrapper
+  - SwiftLocation/BeaconBroadcaster
+  - SwiftLocation/Core
   - SwiftPhotoGallery
 
 SPEC REPOS:
@@ -117,6 +122,7 @@ SPEC REPOS:
     - PromisesObjC
     - SDWebImage
     - SwiftKeychainWrapper
+    - SwiftLocation
     - SwiftPhotoGallery
 
 SPEC CHECKSUMS:
@@ -139,8 +145,9 @@ SPEC CHECKSUMS:
   PromisesObjC: 3113f7f76903778cf4a0586bd1ab89329a0b7b97
   SDWebImage: a7f831e1a65eb5e285e3fb046a23fcfbf08e696d
   SwiftKeychainWrapper: 807ba1d63c33a7d0613288512399cd1eda1e470c
+  SwiftLocation: 83e0ea75a1969cee3a1197e2b7095603fc23fde5
   SwiftPhotoGallery: 795b79e2596beb160fb978e232603da0811006ce
 
-PODFILE CHECKSUM: 0f36644651ada4814471922ac6e3bce64aecd50a
+PODFILE CHECKSUM: bb49a4da0ab9f50b87107e0ca83c41ccf8ff6824
 
-COCOAPODS: 1.10.1
+COCOAPODS: 1.10.2

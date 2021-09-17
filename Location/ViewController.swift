@@ -10,8 +10,8 @@ import CoreLocation
 
 
 class ViewController: UIViewController, UNUserNotificationCenterDelegate {
-    var locationManager = CLLocationManager()
-    var myLocation: CLLocation?
+   // var locationManager = CLLocationManager()
+//    var myLocation: CLLocation?
 //    var onLocationFetched: ((CLLocation)->Void)? = nil
     var locationServiceObject: LocationService!
     

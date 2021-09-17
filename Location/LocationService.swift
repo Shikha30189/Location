@@ -11,6 +11,7 @@ import UIKit
 import CoreLocation
 import UserNotifications
 import Firebase
+import SwiftLocation
 
 enum Result<T> {
   case success(T)
@@ -24,15 +25,17 @@ final class LocationService: NSObject {
     let appDelegate = UIApplication.shared.delegate as! AppDelegate
     let localFence = "LocalFence"
     var onLocationFetched: ((CLLocation)->Void)? = nil
+    var isLocationFound = false
    
 
 
     init(manager: CLLocationManager = .init()) {
-        self.manager = manager
+    self.manager = manager
         
-        super.init()
+       super.init()
         manager.delegate = self
         registerNotifications()
+
       //  ref1 = Database.database().reference()
 
 //        for region in manager.monitoredRegions {
@@ -60,9 +63,9 @@ final class LocationService: NSObject {
 
     func requestLocationAuthorization() {
         manager.delegate = self
-        manager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters
+        manager.desiredAccuracy = kCLLocationAccuracyBest
         manager.requestWhenInUseAuthorization()
-//        manager.stopMonitoringSignificantLocationChanges()
+        manager.startMonitoringSignificantLocationChanges()
         if CLLocationManager.locationServicesEnabled() {
             manager.startUpdatingLocation()
             //locationManager.startUpdatingHeading()
@@ -87,7 +90,7 @@ final class LocationService: NSObject {
     }
     
     
-    func createRegion(coordinate:CLLocationCoordinate2D, radius: Double = 100.0, regionName: String = "LocalFence") {
+    func createRegion(coordinate:CLLocationCoordinate2D, radius: Double = UserDefaults.standard.double(forKey: AppDelegate.outerRadiusKey), regionName: String = "LocalFence") {
 
         if CLLocationManager.isMonitoringAvailable(for: CLCircularRegion.self) {
             //let regionName = "FenceRegion"
@@ -120,11 +123,18 @@ final class LocationService: NSObject {
                     let coords = CLLocationCoordinate2D(latitude: latittude, longitude: longitude)
 
                     if region.contains(coords) {
-                        //
                        let regionID = selectedDic["rid"] as? String
                         //isRegion = true
                         //break
-                        self.createRegion(coordinate: coords, radius: 25.0, regionName: regionID ?? "abc")
+                        let innerRadius  = UserDefaults.standard.double(forKey: AppDelegate.innerRadiusKey)
+                        self.createRegion(coordinate: coords, radius: innerRadius, regionName: regionID ?? "abc")
+                        if let currentLocation = self.myLocation {
+                            let currentRegion = CLCircularRegion(center: currentLocation.coordinate, radius: innerRadius, identifier: "abc")
+                            if currentRegion.contains(coords) {
+                                // schedule notification
+                                self.fetchDataInRegion(regionIdentifier: regionID ?? "abc")
+                            }
+                        }
                     }
                 }
             }
@@ -152,6 +162,19 @@ final class LocationService: NSObject {
             
         }
         
+    }
+    
+    func updateMonitoredRegions() {
+        manager.startUpdatingLocation()
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
+            if let loc = self.myLocation {
+                for region in self.manager.monitoredRegions {
+                    self.manager.stopMonitoring(for: region)
+                }
+                self.createRegion(coordinate: loc.coordinate)
+            }
+        }
     }
 }
 
@@ -227,7 +250,6 @@ final class LocationService: NSObject {
                     if let loc = self.myLocation {
                         if isRegionCreated {
                             DispatchQueue.global().async {
-                                
                                 // Request the task assertion and save the ID.
                                 AppDelegate.backgroundTaskId = UIApplication.shared.beginBackgroundTask(withName: "Fetch Regions", expirationHandler: {
                                     UIApplication.shared.endBackgroundTask(AppDelegate.backgroundTaskId)
@@ -244,7 +266,6 @@ final class LocationService: NSObject {
                             }
                         }
                     }
-                    
                 }
                 
                 if let cordinates = myLocation {
@@ -347,12 +368,15 @@ extension LocationService: UNUserNotificationCenterDelegate {
     
    
     func addViewOnWindow(text: String) {
-        let window = UIApplication.shared.keyWindow!
-        let alert = UIAlertController(title: "Geofence", message:text, preferredStyle: UIAlertController.Style.alert)
-        // add an action (button)
-        alert.addAction(UIAlertAction(title: "OK", style: UIAlertAction.Style.default, handler: nil))
-        // show the alert
-        window.rootViewController?.present(alert, animated: true, completion: nil)
+        DispatchQueue.main.async {
+            let window = UIApplication.shared.keyWindow!
+            let alert = UIAlertController(title: "Geofence", message:text, preferredStyle: UIAlertController.Style.alert)
+            // add an action (button)
+            alert.addAction(UIAlertAction(title: "OK", style: UIAlertAction.Style.default, handler: nil))
+            // show the alert
+            window.rootViewController?.present(alert, animated: true, completion: nil)
+        }
+       
     }
     
 
