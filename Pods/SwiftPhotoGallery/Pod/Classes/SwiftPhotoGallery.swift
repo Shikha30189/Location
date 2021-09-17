@@ -74,11 +74,11 @@ public class SwiftPhotoGallery: UIViewController {
         }
         get {
             if isRevolvingCarouselEnabled {
-                pageBeforeRotation = Int(imageCollectionView.contentOffset.y / imageCollectionView.frame.size.height) - 1
-                return Int(imageCollectionView.contentOffset.y / imageCollectionView.frame.size.height) - 1
+                pageBeforeRotation = Int(imageCollectionView.contentOffset.x / imageCollectionView.frame.size.width) - 1
+                return Int(imageCollectionView.contentOffset.x / imageCollectionView.frame.size.width) - 1
             } else {
-                pageBeforeRotation = Int(imageCollectionView.contentOffset.y / imageCollectionView.frame.size.height)
-                return Int(imageCollectionView.contentOffset.y / imageCollectionView.frame.size.height)
+                pageBeforeRotation = Int(imageCollectionView.contentOffset.x / imageCollectionView.frame.size.width)
+                return Int(imageCollectionView.contentOffset.x / imageCollectionView.frame.size.width)
             }
         }
     }
@@ -97,7 +97,7 @@ public class SwiftPhotoGallery: UIViewController {
     }
     #endif
 
-    public var isSwipeToDismissEnabled: Bool = false
+    public var isSwipeToDismissEnabled: Bool = true
     public var isRevolvingCarouselEnabled: Bool = true
 
     private var pageBeforeRotation: Int = 0
@@ -228,7 +228,7 @@ public class SwiftPhotoGallery: UIViewController {
 
         #if os(iOS)
             let panGesture = PanDirectionGestureRecognizer(direction: PanDirection.vertical, target: self, action: #selector(wasDragged(_:)))
-           // imageCollectionView.addGestureRecognizer(panGesture)
+            imageCollectionView.addGestureRecognizer(panGesture)
             imageCollectionView.isUserInteractionEnabled = true
         #endif
 
@@ -299,7 +299,7 @@ public class SwiftPhotoGallery: UIViewController {
 
     private func setupCollectionView() -> UICollectionView {
         // Set up flow layout
-        flowLayout.scrollDirection = UICollectionView.ScrollDirection.vertical
+        flowLayout.scrollDirection = UICollectionView.ScrollDirection.horizontal
         flowLayout.minimumInteritemSpacing = 0
         flowLayout.minimumLineSpacing = 0
 
@@ -353,7 +353,7 @@ public class SwiftPhotoGallery: UIViewController {
         view.addSubview(collectionView)
         view.addConstraints(imageCollectionViewConstraints)
 
-        collectionView.contentSize = CGSize(width: 1.0, height: 1000.0)
+        collectionView.contentSize = CGSize(width: 1000.0, height: 1.0)
 
         return collectionView
     }
@@ -393,7 +393,7 @@ public class SwiftPhotoGallery: UIViewController {
     }
 
     private func scrollToImage(withIndex: Int, animated: Bool = false) {
-        imageCollectionView.scrollToItem(at: IndexPath(item: withIndex, section: 0), at: .centeredVertically, animated: animated)
+        imageCollectionView.scrollToItem(at: IndexPath(item: withIndex, section: 0), at: .centeredHorizontally, animated: animated)
     }
 
     fileprivate func getImage(currentPage: Int) -> UIImage {

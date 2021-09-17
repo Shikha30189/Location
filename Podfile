@@ -6,7 +6,7 @@ target 'Location' do
   use_frameworks!
 
   # Pods for Location
-  pod 'IQKeyboardManagerSwift'
+#  pod 'IQKeyboardManagerSwift'
   pod ‘Firebase’
   pod ‘Firebase/Database’
   pod 'Firebase/Storage'
@@ -15,8 +15,8 @@ target 'Location' do
   pod 'SDWebImage', '~> 5.0'
   pod 'INSPhotoGallery' 
   pod 'Haneke'
-  pod 'SwiftLocation/Core'
-  pod 'SwiftLocation/BeaconBroadcaster'
+#  pod 'SwiftLocation/Core'
+#  pod 'SwiftLocation/BeaconBroadcaster'
 
   target 'LocationTests' do
     inherit! :search_paths

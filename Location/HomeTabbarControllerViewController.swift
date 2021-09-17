@@ -17,7 +17,6 @@ class HomeTabbarControllerViewController: UITabBarController {
         
         super.viewDidLayoutSubviews()
         let bot = view.safeAreaInsets.bottom
-        print("BOTTTTTOM=======\(bot)")
         if bot > 0 {
             self.tabBarItem.imageInsets = UIEdgeInsets(top: 20, left: 0, bottom: -20, right: 0)
         }

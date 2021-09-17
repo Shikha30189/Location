@@ -16,35 +16,21 @@ class LocationViewController: UIViewController, MKMapViewDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         self.mapView.delegate =  self
-         self.mapView.showsUserLocation = true
+        self.mapView.showsUserLocation = true
+        
         let appDelegate = UIApplication.shared.delegate as! AppDelegate
+        
         locationServiceObject = appDelegate.locationServiceObject
         locationServiceObject.getLocation()
-        locationServiceObject.newLocation = { result in
-            switch result {
-            case .success(let loc):
-                print("location")
-            default:
-                print("Error")
-            }
-          
-        }
-
-        // Do any additional setup after loading the view.
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         navigationController?.setNavigationBarHidden(true, animated: animated)
-
     }
     
     func mapView(_ mapView: MKMapView, didUpdate userLocation: MKUserLocation) {
         let region = MKCoordinateRegion.init(center: userLocation.coordinate, latitudinalMeters: 1000, longitudinalMeters: 1000)
         mapView.setRegion(mapView.regionThatFits(region), animated: true)
-
     }
-    
-    
-
 }
