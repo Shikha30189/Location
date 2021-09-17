@@ -24,9 +24,6 @@ class LocationViewController: UIViewController, MKMapViewDelegate {
             switch result {
             case .success(let loc):
                 print("location")
-//                let region = MKCoordinateRegion.init(center: loc.coordinate, latitudinalMeters: 100, longitudinalMeters: 100)
-//                self.mapView.setRegion(region, animated: true)
-                // update location
             default:
                 print("Error")
             }
@@ -43,12 +40,7 @@ class LocationViewController: UIViewController, MKMapViewDelegate {
     }
     
     func mapView(_ mapView: MKMapView, didUpdate userLocation: MKUserLocation) {
-        var region = MKCoordinateRegion.init(center: userLocation.coordinate, latitudinalMeters: 1000, longitudinalMeters: 1000)
-        //self.mapView.setRegion(region, animated: true)
-//        self.mapView.centerCoordinate = CLLocationCoordinate2D(latitude: userLocation.coordinate.latitude, longitude: userLocation.coordinate.longitude)
-//        var region = MKCoordinateRegion.init(center: userLocation, span: 5)
-//               // Avoid random spanning on the map by setting the region's span to be the same with the map's span
-//               region.span = mapView.region.span
+        let region = MKCoordinateRegion.init(center: userLocation.coordinate, latitudinalMeters: 1000, longitudinalMeters: 1000)
         mapView.setRegion(mapView.regionThatFits(region), animated: true)
 
     }

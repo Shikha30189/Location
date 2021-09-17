@@ -13,6 +13,7 @@ import UserNotifications
 import Firebase
 import SwiftLocation
 
+
 enum Result<T> {
   case success(T)
   case failure(Error)
@@ -20,27 +21,17 @@ enum Result<T> {
 
 
 final class LocationService: NSObject {
-    let manager: CLLocationManager
+    var manager: CLLocationManager!
     var myLocation: CLLocation?
     let appDelegate = UIApplication.shared.delegate as! AppDelegate
     let localFence = "LocalFence"
     var onLocationFetched: ((CLLocation)->Void)? = nil
-    var isLocationFound = false
-   
-
 
     init(manager: CLLocationManager = .init()) {
-    self.manager = manager
-        
-       super.init()
+        self.manager = manager
+        super.init()
         manager.delegate = self
         registerNotifications()
-
-      //  ref1 = Database.database().reference()
-
-//        for region in manager.monitoredRegions {
-//            manager.stopMonitoring(for: region)
-//        }
     }
 
     var newLocation: ((Result<CLLocation>) -> Void)?
@@ -49,7 +40,7 @@ final class LocationService: NSObject {
     var status: CLAuthorizationStatus {
         return self.manager.authorizationStatus
     }
-     
+
     func registerNotifications() {
         UNUserNotificationCenter.current().requestAuthorization(options: [.alert,.badge,.sound]) { (granted:Bool, error:Error?) in
             if error != nil { return }
@@ -59,7 +50,6 @@ final class LocationService: NSObject {
         }
         UNUserNotificationCenter.current().delegate = self
     }
-    
 
     func requestLocationAuthorization() {
         manager.delegate = self
@@ -93,15 +83,9 @@ final class LocationService: NSObject {
     func createRegion(coordinate:CLLocationCoordinate2D, radius: Double = UserDefaults.standard.double(forKey: AppDelegate.outerRadiusKey), regionName: String = "LocalFence") {
 
         if CLLocationManager.isMonitoringAvailable(for: CLCircularRegion.self) {
-            //let regionName = "FenceRegion"
-            //let coordinate = CLLocationCoordinate2DMake((location!.coordinate.latitude), (location!.coordinate.longitude))
-            //let coords = CLLocationCoordinate2D(latitude: coordinate.latitude, longitude: coordinate.longitude)
             let region = CLCircularRegion(center: coordinate, radius: radius, identifier: regionName)
             region.notifyOnEntry = true
             region.notifyOnExit  = true
-           // fetchData(region: region)
-            addViewOnWindow(text: "region created")
-            scheduleLocalNotification(alert: "\nRegion Created for identifier ===\(regionName) === regionRadius ===== \(radius) \(coordinate)", identifier: "FenceCreate", imageURLS: nil)
             manager.startMonitoring(for: region)
             if regionName == localFence {
                 /// fetch regions from server
@@ -124,8 +108,6 @@ final class LocationService: NSObject {
 
                     if region.contains(coords) {
                        let regionID = selectedDic["rid"] as? String
-                        //isRegion = true
-                        //break
                         let innerRadius  = UserDefaults.standard.double(forKey: AppDelegate.innerRadiusKey)
                         self.createRegion(coordinate: coords, radius: innerRadius, regionName: regionID ?? "abc")
                         if let currentLocation = self.myLocation {
@@ -152,8 +134,6 @@ final class LocationService: NSObject {
                     imgURLS.append(selectedDic["myImageURL"] as! String)
                 }
             }
-           // print("POST DATA")
-            
             self.scheduleLocalNotification(alert: "\(String(describing:  snapshot.value))", identifier: "PHOTODATA", imageURLS: imgURLS)
             
         } withCancel: { error in
@@ -166,7 +146,6 @@ final class LocationService: NSObject {
     
     func updateMonitoredRegions() {
         manager.startUpdatingLocation()
-        
         DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
             if let loc = self.myLocation {
                 for region in self.manager.monitoredRegions {
@@ -183,28 +162,24 @@ final class LocationService: NSObject {
  extension LocationService: CLLocationManagerDelegate {
     func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
         newLocation?(.failure(error))
-        //manager.stopUpdatingLocation()
     }
 
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         if let location = locations.last {
             onLocationFetched?(location)
             myLocation = location
-           // scheduleLocalNotification(alert: "location update")
+            // scheduleLocalNotification(alert: "location update")
             if self.manager.monitoredRegions.count == 0 {
                 if let loc = myLocation {
                     createRegion(coordinate: loc.coordinate)
                 }
             }
-         
-        }else {
+        } else {
             print("\nCannot fetch user location")
         }
         if let location = locations.sorted(by: {$0.timestamp > $1.timestamp}).first {
             newLocation?(.success(location))
         }
-      
-       // manager.stopUpdatingLocation()
     }
 
     func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
@@ -219,7 +194,6 @@ final class LocationService: NSObject {
     func locationManager(_ manager: CLLocationManager, didEnterRegion region: CLRegion) {
         if region.identifier != localFence {
             /// fetch images data
-            
             UIApplication.shared.beginBackgroundTask(withName: "Fetch Data", expirationHandler: {
                 UIApplication.shared.endBackgroundTask(AppDelegate.backgroundDataTaskId)
                 AppDelegate.backgroundDataTaskId = .invalid
@@ -230,19 +204,10 @@ final class LocationService: NSObject {
             AppDelegate.backgroundDataTaskId = .invalid
             
             
-        } else {
-            if let cordinates = myLocation {
-               // addViewOnWindow(text: "Enter region")
-
-                scheduleLocalNotification(alert: "didEnterRegion ====\(region.identifier)===Lat=====\(cordinates.coordinate.latitude)====Long=====\(cordinates.coordinate.longitude)", imageURLS: nil)
-            } else {
-                scheduleLocalNotification(alert: "didEnterRegion ====\(region.identifier)", imageURLS: nil)
-            }
         }
     }
     
     func locationManager(_ manager: CLLocationManager, didExitRegion region: CLRegion) {
-            
             if region.identifier == localFence {
                 manager.startUpdatingLocation()
                 var isRegionCreated = true
@@ -268,64 +233,11 @@ final class LocationService: NSObject {
                     }
                 }
                 
-                if let cordinates = myLocation {
-                    addViewOnWindow(text: "Exit region")
-                    scheduleLocalNotification(alert: "ndidExitRegion ====\(region.identifier) ===Lat=====\(cordinates.coordinate.latitude)====Long=====\(cordinates.coordinate.longitude)", imageURLS: nil)
-                    
-                } else {
-                    scheduleLocalNotification(alert: "ndidExitRegion ====\(region.identifier)", imageURLS: nil)
-                }
-
             }
         }
     
-/*
-    func locationManager(_ manager: CLLocationManager, didExitRegion region: CLRegion) {
-        
-        if region.identifier == localFence {
-            var isCreateRegion = true
-            manager.startUpdatingLocation()
-            if let cordinates = myLocation {
-                addViewOnWindow(text: "Exit region")
-                scheduleLocalNotification(alert: "ndidExitRegion ====\(region.identifier) ===Lat=====\(cordinates.coordinate.latitude)====Long=====\(cordinates.coordinate.longitude)", imageURLS: nil)
-                
-            } else {
-                scheduleLocalNotification(alert: "ndidExitRegion ====\(region.identifier)", imageURLS: nil)
-                
-            }
-            
-            
-            DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
-                        if let loc = self.myLocation {
-                            for region in manager.monitoredRegions {
-                                manager.stopMonitoring(for: region)
-                            }
-                            self.createRegion(coordinate: loc.coordinate)
-                        }
-                    }
-            
-//            onLocationFetched = { location in
-//                if isCreateRegion {
-//                    if let loc = self.myLocation {
-//                        for region in manager.monitoredRegions {
-//                            manager.stopMonitoring(for: region)
-//                        }
-//                        self.createRegion(coordinate: loc.coordinate)
-//                        isCreateRegion = false
-//                    }
-//                }
-//
-//            }
 
-        } else {
-            
-        }
-        
-    }
- */
-    
     func locationManager(_ manager: CLLocationManager, monitoringDidFailFor region: CLRegion?, withError error: Error) {
-        //locationTextView.text += "\nRegion Error====\(error.localizedDescription)"
         scheduleLocalNotification(alert: "failRegionMonitoring ====\(error.localizedDescription)", imageURLS: nil)
     }
     
@@ -336,32 +248,25 @@ extension LocationService: UNUserNotificationCenterDelegate {
     
     func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
         
-        // get the notification identifier to respond accordingly
         if let imageURLS = response.notification.request.content.userInfo["imgurls"] as? [String] {
-//            var backButtonImage = UIImage(named: "Capture")
-//            //      var backButtonImage = UIImage(named: "back-button-image")
-//            backButtonImage = backButtonImage?.stretchableImage(withLeftCapWidth: 15, topCapHeight: 30)
-//            UIBarButtonItem.appearance().setBackButtonBackgroundImage(backButtonImage, for: .normal, barMetrics: .default)
             
             let mainStoryboard = UIStoryboard(name: "Main", bundle: nil)
             let homeController: GalleryViewController = mainStoryboard.instantiateViewController(withIdentifier: "GalleryViewController") as! GalleryViewController
             homeController.items = imageURLS
             
             guard let tabBarVC = UIApplication.shared.windows.filter({$0.isKeyWindow}).first?.rootViewController as? UITabBarController else { return }
-                if let currentNavController = tabBarVC.selectedViewController as? UINavigationController {
-                    currentNavController.pushViewController(homeController, animated: true)
+            if let currentNavController = tabBarVC.selectedViewController as? UINavigationController {
+                currentNavController.pushViewController(homeController, animated: true)
             }
         }
-
+        
     }
-    
-    
+
     func userNotificationCenter(_ center: UNUserNotificationCenter,
                                   willPresent notification: UNNotification,
                                   withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
           let userInfo = notification.request.content.userInfo
-          print(userInfo) // the payload that is attached to the push notification
-          // you can customize the notification presentation options. Below code will show notification banner as well as play a sound. If you want to add a badge too, add .badge in the array.
+          print(userInfo)
           completionHandler([.alert,.sound])
       }
  
@@ -371,9 +276,7 @@ extension LocationService: UNUserNotificationCenterDelegate {
         DispatchQueue.main.async {
             let window = UIApplication.shared.keyWindow!
             let alert = UIAlertController(title: "Geofence", message:text, preferredStyle: UIAlertController.Style.alert)
-            // add an action (button)
             alert.addAction(UIAlertAction(title: "OK", style: UIAlertAction.Style.default, handler: nil))
-            // show the alert
             window.rootViewController?.present(alert, animated: true, completion: nil)
         }
        
@@ -396,5 +299,6 @@ extension LocationService: UNUserNotificationCenterDelegate {
                 print("Notification Register Success")
             }
         }
+ 
 }
 
