@@ -21,6 +21,10 @@ class RadiusViewController: UIViewController {
 
     }
     
+    @IBAction func backgroundTapped(_ sender: Any) {
+        view.endEditing(true)
+    }
+    
     @IBAction func saveButtonClick(_ sender: Any) {
         let innerRadius = Double(innerTextField.text ?? "25")
         let outerRadius  = Double(outerTextField.text ?? "100")

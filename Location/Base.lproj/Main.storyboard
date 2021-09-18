@@ -213,65 +213,77 @@
         <scene sceneID="v9J-h4-xUt">
             <objects>
                 <viewController id="3wt-0B-1a5" customClass="RadiusViewController" customModule="HSTRY" customModuleProvider="target" sceneMemberID="viewController">
-                    <view key="view" contentMode="scaleToFill" id="LWI-TT-bPk">
+                    <view key="view" contentMode="scaleToFill" id="LWI-TT-bPk" customClass="UIControl">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="0lK-1a-W7C" userLabel="Round Style Text Field - InnerRadius">
-                                <rect key="frame" x="67" y="231" width="118" height="34"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="34" id="Ce6-39-t4O"/>
-                                    <constraint firstAttribute="width" constant="118" id="Wl4-43-m9l"/>
-                                </constraints>
-                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                <textInputTraits key="textInputTraits"/>
-                            </textField>
-                            <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="9hX-o8-O4S" userLabel="Round Style Text Field - Outer Radius">
-                                <rect key="frame" x="229" y="231.5" width="131" height="34"/>
-                                <constraints>
-                                    <constraint firstAttribute="width" constant="131" id="1zU-k9-z2M"/>
-                                    <constraint firstAttribute="height" constant="34" id="yuy-q5-hrg"/>
-                                </constraints>
-                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                <textInputTraits key="textInputTraits"/>
-                            </textField>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="VRQ-IV-KWr">
-                                <rect key="frame" x="184" y="342" width="58" height="30"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <state key="normal" title="Save"/>
-                                <connections>
-                                    <action selector="saveButtonClick:" destination="3wt-0B-1a5" eventType="touchUpInside" id="3fq-hK-qzY"/>
-                                </connections>
-                            </button>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="inner" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="gLp-ku-0v4">
-                                <rect key="frame" x="67" y="188" width="39" height="21"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="21" id="dHz-8X-GJm"/>
-                                </constraints>
-                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                <nil key="textColor"/>
-                                <nil key="highlightedColor"/>
-                            </label>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="outer" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="e8I-le-0wo">
-                                <rect key="frame" x="229" y="188" width="41" height="17.5"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                <nil key="textColor"/>
-                                <nil key="highlightedColor"/>
-                            </label>
+                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" spacing="32" translatesAutoresizingMaskIntoConstraints="NO" id="q0X-Q2-uF7">
+                                <rect key="frame" x="0.0" y="88" width="414" height="140"/>
+                                <subviews>
+                                    <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" alignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="BVD-T6-3x9">
+                                        <rect key="frame" x="16" y="0.0" width="382" height="76"/>
+                                        <subviews>
+                                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="fillEqually" alignment="center" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="HKe-Fo-VCT">
+                                                <rect key="frame" x="0.0" y="0.0" width="191" height="76"/>
+                                                <subviews>
+                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="HSTRY Region Radius" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="gLp-ku-0v4">
+                                                        <rect key="frame" x="12" y="0.0" width="167" height="34"/>
+                                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                        <nil key="textColor"/>
+                                                        <nil key="highlightedColor"/>
+                                                    </label>
+                                                    <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="0lK-1a-W7C" userLabel="Round Style Text Field - InnerRadius">
+                                                        <rect key="frame" x="45.5" y="42" width="100" height="34"/>
+                                                        <constraints>
+                                                            <constraint firstAttribute="width" constant="100" id="Apq-cU-bGY"/>
+                                                        </constraints>
+                                                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                                        <textInputTraits key="textInputTraits"/>
+                                                    </textField>
+                                                </subviews>
+                                            </stackView>
+                                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="fillEqually" alignment="center" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="u7c-3P-byl">
+                                                <rect key="frame" x="191" y="0.0" width="191" height="76"/>
+                                                <subviews>
+                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Location Re-fetch Radius" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="e8I-le-0wo">
+                                                        <rect key="frame" x="0.0" y="0.0" width="191" height="34"/>
+                                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                        <nil key="textColor"/>
+                                                        <nil key="highlightedColor"/>
+                                                    </label>
+                                                    <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="9hX-o8-O4S" userLabel="Round Style Text Field - Outer Radius">
+                                                        <rect key="frame" x="45.5" y="42" width="100" height="34"/>
+                                                        <constraints>
+                                                            <constraint firstAttribute="width" constant="100" id="4Ps-Qq-fgS"/>
+                                                        </constraints>
+                                                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                                        <textInputTraits key="textInputTraits"/>
+                                                    </textField>
+                                                </subviews>
+                                            </stackView>
+                                        </subviews>
+                                    </stackView>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="VRQ-IV-KWr">
+                                        <rect key="frame" x="129.5" y="108" width="155" height="32"/>
+                                        <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="16"/>
+                                        <state key="normal" title="Save and Reinitialise"/>
+                                        <connections>
+                                            <action selector="saveButtonClick:" destination="3wt-0B-1a5" eventType="touchUpInside" id="3fq-hK-qzY"/>
+                                        </connections>
+                                    </button>
+                                </subviews>
+                            </stackView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="7j7-GE-DqG"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
-                            <constraint firstItem="7j7-GE-DqG" firstAttribute="trailing" secondItem="9hX-o8-O4S" secondAttribute="trailing" constant="54" id="7Ft-43-I0V"/>
-                            <constraint firstItem="9hX-o8-O4S" firstAttribute="leading" secondItem="e8I-le-0wo" secondAttribute="leading" id="DgO-om-q1T"/>
-                            <constraint firstItem="e8I-le-0wo" firstAttribute="top" secondItem="gLp-ku-0v4" secondAttribute="top" id="Evu-Me-Fgg"/>
-                            <constraint firstItem="0lK-1a-W7C" firstAttribute="leading" secondItem="gLp-ku-0v4" secondAttribute="leading" id="KHg-ff-mvW"/>
-                            <constraint firstItem="9hX-o8-O4S" firstAttribute="top" secondItem="e8I-le-0wo" secondAttribute="bottom" constant="26" id="cJF-cQ-Bz1"/>
-                            <constraint firstItem="gLp-ku-0v4" firstAttribute="leading" secondItem="7j7-GE-DqG" secondAttribute="leading" constant="67" id="gTv-bz-gwW"/>
-                            <constraint firstItem="0lK-1a-W7C" firstAttribute="top" secondItem="gLp-ku-0v4" secondAttribute="bottom" constant="22" id="kEp-mF-ZsO"/>
-                            <constraint firstItem="e8I-le-0wo" firstAttribute="height" secondItem="gLp-ku-0v4" secondAttribute="height" multiplier="0.84" id="l1c-6l-SWp"/>
-                            <constraint firstItem="gLp-ku-0v4" firstAttribute="top" secondItem="7j7-GE-DqG" secondAttribute="top" constant="100" id="sHL-eh-PYy"/>
+                            <constraint firstItem="q0X-Q2-uF7" firstAttribute="top" secondItem="7j7-GE-DqG" secondAttribute="top" id="sWu-5f-hRd"/>
+                            <constraint firstItem="q0X-Q2-uF7" firstAttribute="leading" secondItem="7j7-GE-DqG" secondAttribute="leading" id="vbZ-hT-PfF"/>
+                            <constraint firstItem="7j7-GE-DqG" firstAttribute="trailing" secondItem="q0X-Q2-uF7" secondAttribute="trailing" id="viV-Zd-xm9"/>
                         </constraints>
+                        <connections>
+                            <action selector="backgroundTapped:" destination="3wt-0B-1a5" eventType="touchUpInside" id="VcA-fF-auQ"/>
+                        </connections>
                     </view>
                     <navigationItem key="navigationItem" id="aUl-cg-NVI"/>
                     <connections>
