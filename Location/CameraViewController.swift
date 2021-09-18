@@ -199,15 +199,16 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, A
                                 "Longitude"    : longi,
                                 "timestamp"     : NSDate().timeIntervalSince1970,
                                 "rid"       : uuid
-                            ]) {
-                                (error:Error?, ref:DatabaseReference) in
-                                self.removeSpinner()
+                            ]) { [weak self] (error:Error?, ref:DatabaseReference) in
+                                self?.removeSpinner()
                                 if let error = error {
-                                    self.showErrorAlert(message: "Failed to save region: \(error).")
+                                    self?.showErrorAlert(message: "Failed to save region: \(error).")
                                     print("Region can not be saved: \(error).")
                                 } else {
-                                    self.photoPreviewView.isHidden = true
-                                    self.saveImage(rid: uuid, imageURL: imageURL)
+                                    self?.photoPreviewView.isHidden = true
+                                    let innerRadius  = UserDefaults.standard.double(forKey: AppDelegate.innerRadiusKey)
+                                    self?.locationServiceObject.createRegion(coordinate: CLLocationCoordinate2D(latitude: lat, longitude: longi), radius: innerRadius, regionName: uuid)
+                                    self?.saveImage(rid: uuid, imageURL: imageURL)
                                     print("Region saved successfully!")
                                 }
                             }
