@@ -6,7 +6,6 @@
 //
 
 import UIKit
-import IQKeyboardManagerSwift
 import Firebase
 import CoreLocation
 import BackgroundTasks
@@ -34,7 +33,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             UserDefaults.standard.set(100.0, forKey: AppDelegate.outerRadiusKey)
         }
         
-        IQKeyboardManager.shared.enable = true
         FirebaseApp.configure()
         locationServiceObject = LocationService()
         window?.makeKeyAndVisible()

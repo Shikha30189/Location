@@ -71,7 +71,6 @@ PODS:
   - GTMSessionFetcher/Core (1.6.1)
   - Haneke (1.0.2)
   - INSPhotoGallery (1.2.8)
-  - IQKeyboardManagerSwift (6.5.6)
   - leveldb-library (1.22.1)
   - nanopb (1.30906.0):
     - nanopb/decode (= 1.30906.0)
@@ -83,9 +82,6 @@ PODS:
     - SDWebImage/Core (= 5.11.1)
   - SDWebImage/Core (5.11.1)
   - SwiftKeychainWrapper (4.0.1)
-  - SwiftLocation/BeaconBroadcaster (5.1.0):
-    - SwiftLocation/Core
-  - SwiftLocation/Core (5.1.0)
   - SwiftPhotoGallery (3.4.1)
 
 DEPENDENCIES:
@@ -94,11 +90,8 @@ DEPENDENCIES:
   - Firebase/Storage
   - Haneke
   - INSPhotoGallery
-  - IQKeyboardManagerSwift
   - SDWebImage (~> 5.0)
   - SwiftKeychainWrapper
-  - SwiftLocation/BeaconBroadcaster
-  - SwiftLocation/Core
   - SwiftPhotoGallery
 
 SPEC REPOS:
@@ -116,13 +109,11 @@ SPEC REPOS:
     - GTMSessionFetcher
     - Haneke
     - INSPhotoGallery
-    - IQKeyboardManagerSwift
     - leveldb-library
     - nanopb
     - PromisesObjC
     - SDWebImage
     - SwiftKeychainWrapper
-    - SwiftLocation
     - SwiftPhotoGallery
 
 SPEC CHECKSUMS:
@@ -139,15 +130,13 @@ SPEC CHECKSUMS:
   GTMSessionFetcher: 36689134877faeb055b27dfa4ccc9ceaa42e029e
   Haneke: 01454a67322faa0dd9d81fc0f447885044e71521
   INSPhotoGallery: ad317cb9a59c7a5f08550e4155b49622c24dcab3
-  IQKeyboardManagerSwift: c7df9d2deb356c04522f5c4b7b6e4ce4d8ed94fe
   leveldb-library: 50c7b45cbd7bf543c81a468fe557a16ae3db8729
   nanopb: 59317e09cf1f1a0af72f12af412d54edf52603fc
   PromisesObjC: 3113f7f76903778cf4a0586bd1ab89329a0b7b97
   SDWebImage: a7f831e1a65eb5e285e3fb046a23fcfbf08e696d
   SwiftKeychainWrapper: 807ba1d63c33a7d0613288512399cd1eda1e470c
-  SwiftLocation: 83e0ea75a1969cee3a1197e2b7095603fc23fde5
   SwiftPhotoGallery: 795b79e2596beb160fb978e232603da0811006ce
 
-PODFILE CHECKSUM: bb49a4da0ab9f50b87107e0ca83c41ccf8ff6824
+PODFILE CHECKSUM: c2fcf35b7a0a075d5f687fb4e066e7958fcdc4a2
 
-COCOAPODS: 1.10.2
+COCOAPODS: 1.10.1

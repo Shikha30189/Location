@@ -20,31 +20,30 @@ class ViewController: UIViewController, UNUserNotificationCenterDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         let appDelegate = UIApplication.shared.delegate as! AppDelegate
-        
         locationServiceObject = appDelegate.locationServiceObject
+        
         locationServiceObject.didChangeStatus = { status in
-            if status {
-                if self.locationServiceObject.status == .authorizedWhenInUse {
-                    self.locationServiceObject.requestLocationAlwaysAuthorization()
-                    
-                } else {
-                    let mainStoryboard = UIStoryboard(name: "Main", bundle: nil)
-                    let homeController = mainStoryboard.instantiateViewController(withIdentifier: "HomeViewController")
-                    appDelegate.window!.rootViewController = homeController
-                }
+            switch status {
+            case .authorizedAlways:
+                self.locationServiceObject.getLocation()
+                let mainStoryboard = UIStoryboard(name: "Main", bundle: nil)
+                let homeController = mainStoryboard.instantiateViewController(withIdentifier: "HomeViewController")
+                appDelegate.window!.rootViewController = homeController
                 
-            } else {
-                if self.locationServiceObject.status == .notDetermined || self.locationServiceObject.status == .restricted || self.locationServiceObject.status == .denied {
-                    self.locationServiceObject.requestLocationAuthorization()
-                }
-                else if self.locationServiceObject.status == .authorizedWhenInUse {
-                    self.locationServiceObject.requestLocationAlwaysAuthorization()
-                } else if self.locationServiceObject.status == .authorizedAlways {
-                    self.locationServiceObject.requestLocation()
-                    let mainStoryboard = UIStoryboard(name: "Main", bundle: nil)
-                    let homeController = mainStoryboard.instantiateViewController(withIdentifier: "HomeViewController")
-                    appDelegate.window!.rootViewController = homeController
-                }
+            case .authorizedWhenInUse:
+                self.locationServiceObject.requestLocationAlwaysAuthorization()
+                
+            case .denied:
+                self.locationServiceObject.requestLocationAuthorization()
+                
+            case .notDetermined:
+                self.locationServiceObject.requestLocationAuthorization()
+                
+            case .restricted:
+                self.locationServiceObject.requestLocationAuthorization()
+                
+            @unknown default:
+                self.locationServiceObject.requestLocationAuthorization()
             }
         }
         
