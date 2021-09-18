@@ -69,7 +69,7 @@ final class LocationService: NSObject {
     }
     
     func initialiseAllRegions(with userLocation: CLLocationCoordinate2D) {
-            AppDelegate.backgroundTaskId = UIApplication.shared.beginBackgroundTask(withName: "Fetch Regions", expirationHandler: {
+            AppDelegate.backgroundTaskId = UIApplication.shared.beginBackgroundTask(withName: "com.HSTRY.FetchRegions", expirationHandler: {
                 UIApplication.shared.endBackgroundTask(AppDelegate.backgroundTaskId)
                 AppDelegate.backgroundTaskId = .invalid
             })
@@ -139,9 +139,9 @@ final class LocationService: NSObject {
     }
     
     
-    func fetchDataInRegion(regionIdentifier: String) {
+    func fetchDataInRegion(regionIdentifier: String, callback: CallBack? = nil) {
         AppDelegate.ref.child("Posts").queryOrdered(byChild: "regionid").queryEqual(toValue : regionIdentifier).observeSingleEvent(of: .value) { snapshot in
-            print("\(String(describing:  snapshot.value))")
+            
             var imgURLS = [String]()
             if let tempDic : Dictionary = snapshot.value as? Dictionary<String,Any> {
                 for key in tempDic.keys {
@@ -150,11 +150,12 @@ final class LocationService: NSObject {
                 }
             }
             self.scheduleLocalNotification(alert: "\(String(describing:  snapshot.value))", identifier: "PHOTODATA", imageURLS: imgURLS)
+            callback?()
             
         } withCancel: { error in
             print("POST ERROR")
             self.scheduleLocalNotification(alert: "ERROR", identifier: "PHOTODATA", imageURLS: nil)
-            
+            callback?()
         }
         
     }
@@ -179,15 +180,9 @@ final class LocationService: NSObject {
         if let location = locations.last {
             myLocation = location
             newLocation?(.success(location))
-            if self.manager.monitoredRegions.count == 0 {
-                initialiseAllRegions(with: location.coordinate)
-            }
+            newLocation = nil
         } else {
             print("\nCannot fetch user location")
-        }
-        
-        if let location = locations.sorted(by: {$0.timestamp > $1.timestamp}).first {
-            newLocation?(.success(location))
         }
     }
 
@@ -197,17 +192,16 @@ final class LocationService: NSObject {
     
     func locationManager(_ manager: CLLocationManager, didEnterRegion region: CLRegion) {
         if region.identifier != localFence {
-            /// fetch images data
-            UIApplication.shared.beginBackgroundTask(withName: "Fetch Data", expirationHandler: {
+            
+            AppDelegate.backgroundTaskId = UIApplication.shared.beginBackgroundTask(withName: "com.HSTRY.FetchData", expirationHandler: {
                 UIApplication.shared.endBackgroundTask(AppDelegate.backgroundDataTaskId)
                 AppDelegate.backgroundDataTaskId = .invalid
             })
         
-            fetchDataInRegion(regionIdentifier: region.identifier)
-            UIApplication.shared.endBackgroundTask(AppDelegate.backgroundDataTaskId)
-            AppDelegate.backgroundDataTaskId = .invalid
-            
-            
+            fetchDataInRegion(regionIdentifier: region.identifier) {
+                UIApplication.shared.endBackgroundTask(AppDelegate.backgroundDataTaskId)
+                AppDelegate.backgroundDataTaskId = .invalid
+            }
         }
     }
     

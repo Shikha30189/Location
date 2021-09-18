@@ -95,9 +95,14 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, A
     }
        
     @IBAction func cameraClicked(_ sender: Any) {
-        let settings = AVCapturePhotoSettings(format: [AVVideoCodecKey: AVVideoCodecType.jpeg])
-        stillImageOutput.capturePhoto(with: settings, delegate: self)
-
+        if TARGET_IPHONE_SIMULATOR != 0 {
+            let image = UIImage(named: "SampleImage")
+            uploadMedia(image: image!) { result in
+            }
+        }else {
+            let settings = AVCapturePhotoSettings(format: [AVVideoCodecKey: AVVideoCodecType.jpeg])
+            stillImageOutput.capturePhoto(with: settings, delegate: self)
+        }
     }
     
     func photoOutput(_ output: AVCapturePhotoOutput, didFinishProcessingPhoto photo: AVCapturePhoto, error: Error?) {
@@ -157,73 +162,82 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, A
     }
     
     func saveData(imageURL: String) {
-        /// check for region in region table, if exist fetch it otherwise create it
-        var regionID: String?
-        let lat = self.locationServiceObject.myLocation?.coordinate.latitude ?? 0.0
-        let longi = self.locationServiceObject.myLocation?.coordinate.longitude ?? 0.0
-        let region = CLCircularRegion(center: CLLocationCoordinate2D(latitude: lat, longitude: longi), radius: 25, identifier: "test")
-        AppDelegate.ref.child("Regions").observeSingleEvent(of: .value) { snapshot in
-            print("\(String(describing:  snapshot.value))")
-            if let tempDic : Dictionary = snapshot.value as? Dictionary<String,Any> {
-                print(tempDic)
-                var isRegion = false
-                for key in tempDic.keys {
-                    let selectedDic = tempDic[key] as! Dictionary<String,Any>
-                    let latittude = selectedDic["Latitude"] as! Double
-                    let longitude = selectedDic["Longitude"] as! Double
-                    let coords = CLLocationCoordinate2D(latitude: latittude, longitude: longitude)
+        locationServiceObject.getLocation { result in
+            if case let .success(latestLocation) = result {
+                
+                let lat = latestLocation.coordinate.latitude
+                let longi = latestLocation.coordinate.longitude
+                
+                AppDelegate.ref.child("Regions").observeSingleEvent(of: .value) { snapshot in
                     
-                    if region.contains(coords) {
-                        regionID = selectedDic["rid"] as? String
-                        isRegion = true
-                        break
-                    }
-                }
-                if isRegion {
-                    // Region Exist
-                    self.saveImage(rid: regionID!, imageURL: imageURL)
-                } else {
-                    let uuid = self.generateUuid()
-                    AppDelegate.ref.child("Regions").childByAutoId().setValue([
-                        "Latitude"      : lat,
-                        "Longitude"    : longi,
-                        "timestamp"     : NSDate().timeIntervalSince1970,
-                        "rid"       : uuid
-                    ]) {
-                        (error:Error?, ref:DatabaseReference) in
-                        self.removeSpinner()
-                        if let error = error {
-                            self.showErrorAlert(message: "Failed to save region: \(error).")
-                            print("Region can not be saved: \(error).")
-                        } else {
-                            self.photoPreviewView.isHidden = true
-                            self.saveImage(rid: uuid, imageURL: imageURL)
-                            print("Region saved successfully!")
+                    if let tempDic : Dictionary = snapshot.value as? Dictionary<String,Any> {
+                        
+                        var isRegion = false
+                        var regionID: String?
+                        
+                        for key in tempDic.keys {
+                            let selectedDic = tempDic[key] as! Dictionary<String,Any>
+                            let latittude = selectedDic["Latitude"] as! Double
+                            let longitude = selectedDic["Longitude"] as! Double
+
+                            let innerRadius  = UserDefaults.standard.double(forKey: AppDelegate.innerRadiusKey)
+                            let region = CLCircularRegion(center: CLLocationCoordinate2D(latitude: latittude, longitude: longitude), radius: innerRadius, identifier: "test")
+                            
+                            if region.contains(latestLocation.coordinate) {
+                                regionID = selectedDic["rid"] as? String
+                                isRegion = true
+                                break
+                            }
                         }
-                    }
-                }
-            } else {
-                let uuid = self.generateUuid()
-                AppDelegate.ref.child("Regions").childByAutoId().setValue([
-                    "Latitude"      : lat,
-                    "Longitude"    : longi,
-                    "timestamp"     : NSDate().timeIntervalSince1970,
-                    "rid"       : uuid
-                ]) {
-                    (error:Error?, ref:DatabaseReference) in
-                    self.removeSpinner()
-                    if let error = error {
-                        self.showErrorAlert(message: "Failed to save region: \(error).")
-                        print("Region can not be saved: \(error).")
+                        if isRegion {
+                            // Region Exist
+                            self.saveImage(rid: regionID!, imageURL: imageURL)
+                        } else {
+                            let uuid = self.generateUuid()
+                            AppDelegate.ref.child("Regions").childByAutoId().setValue([
+                                "Latitude"      : lat,
+                                "Longitude"    : longi,
+                                "timestamp"     : NSDate().timeIntervalSince1970,
+                                "rid"       : uuid
+                            ]) {
+                                (error:Error?, ref:DatabaseReference) in
+                                self.removeSpinner()
+                                if let error = error {
+                                    self.showErrorAlert(message: "Failed to save region: \(error).")
+                                    print("Region can not be saved: \(error).")
+                                } else {
+                                    self.photoPreviewView.isHidden = true
+                                    self.saveImage(rid: uuid, imageURL: imageURL)
+                                    print("Region saved successfully!")
+                                }
+                            }
+                        }
                     } else {
-                        self.photoPreviewView.isHidden = true
-                        self.saveImage(rid: uuid, imageURL: imageURL)
-                        print("Region saved successfully!")
+                        let uuid = self.generateUuid()
+                        AppDelegate.ref.child("Regions").childByAutoId().setValue([
+                            "Latitude"      : lat,
+                            "Longitude"    : longi,
+                            "timestamp"     : NSDate().timeIntervalSince1970,
+                            "rid"       : uuid
+                        ]) {
+                            (error:Error?, ref:DatabaseReference) in
+                            self.removeSpinner()
+                            if let error = error {
+                                self.showErrorAlert(message: "Failed to save region: \(error).")
+                                print("Region can not be saved: \(error).")
+                            } else {
+                                self.photoPreviewView.isHidden = true
+                                self.saveImage(rid: uuid, imageURL: imageURL)
+                                print("Region saved successfully!")
+                            }
+                        }
+                        
                     }
                 }
                 
             }
         }
+        
     }
         
     func saveImage(rid: String, imageURL: String) {

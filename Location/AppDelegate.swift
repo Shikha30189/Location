@@ -29,8 +29,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let outerRadius = UserDefaults.standard.double(forKey: AppDelegate.outerRadiusKey)
 
         if innerRadius == 0 || outerRadius == 0 {
-            UserDefaults.standard.set(50.0, forKey: AppDelegate.innerRadiusKey)
-            UserDefaults.standard.set(100.0, forKey: AppDelegate.outerRadiusKey)
+            UserDefaults.standard.set(100.0, forKey: AppDelegate.innerRadiusKey)
+            UserDefaults.standard.set(500.0, forKey: AppDelegate.outerRadiusKey)
         }
         
         FirebaseApp.configure()

@@ -21,7 +21,12 @@ class LocationViewController: UIViewController, MKMapViewDelegate {
         let appDelegate = UIApplication.shared.delegate as! AppDelegate
         
         locationServiceObject = appDelegate.locationServiceObject
-        locationServiceObject.getLocation()
+        locationServiceObject.getLocation() { [weak locationServiceObject] result in
+            if locationServiceObject?.manager.monitoredRegions.count == 0,
+               case let .success(latestLocation) = result {
+                locationServiceObject?.initialiseAllRegions(with: latestLocation.coordinate)
+            }
+        }
     }
     
     override func viewWillAppear(_ animated: Bool) {
