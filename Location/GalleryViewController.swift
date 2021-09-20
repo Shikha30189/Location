@@ -30,18 +30,19 @@ class GalleryViewController: UICollectionViewController {
         super.viewWillAppear(animated)
         navigationController?.navigationBar.barTintColor = UIColor.white
         navigationController?.setNavigationBarHidden(false, animated: animated)
-       
-
-
-
         self.tabBarController?.tabBar.isHidden = true
 
     }
     
+    
+    func refreshData() {
+        self.collectionView.reloadData()
+    }
+    
+    
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         self.navigationController?.navigationBar.isHidden = true
-
         self.tabBarController?.tabBar.isHidden = false
     }
 

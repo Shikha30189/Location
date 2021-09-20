@@ -149,12 +149,12 @@ final class LocationService: NSObject {
                     imgURLS.append(selectedDic["myImageURL"] as! String)
                 }
             }
-            self.scheduleLocalNotification(alert: "\(String(describing:  snapshot.value))", identifier: "PHOTODATA", imageURLS: imgURLS)
+            self.scheduleLocalNotification(alert: "\(String(describing:  snapshot.value))", imageURLS: imgURLS)
             callback?()
             
         } withCancel: { error in
             print("POST ERROR")
-            self.scheduleLocalNotification(alert: "ERROR", identifier: "PHOTODATA", imageURLS: nil)
+            self.scheduleLocalNotification(alert: "ERROR", imageURLS: nil)
             callback?()
         }
         
@@ -230,18 +230,28 @@ extension LocationService: UNUserNotificationCenterDelegate {
     func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
         
         if let imageURLS = response.notification.request.content.userInfo["imgurls"] as? [String] {
-            
-            let mainStoryboard = UIStoryboard(name: "Main", bundle: nil)
-            let homeController: GalleryViewController = mainStoryboard.instantiateViewController(withIdentifier: "GalleryViewController") as! GalleryViewController
-            homeController.items = imageURLS
-            
-            guard let tabBarVC = UIApplication.shared.windows.filter({$0.isKeyWindow}).first?.rootViewController as? UITabBarController else { return }
-            if let currentNavController = tabBarVC.selectedViewController as? UINavigationController {
-                currentNavController.pushViewController(homeController, animated: true)
+            var controller =  UIApplication.getTopViewController()
+            if controller is GalleryViewController {
+                
+                //reload data
+                (controller as? GalleryViewController)?.items = imageURLS
+                (controller as? GalleryViewController)?.refreshData()
+                
+            } else {
+                let mainStoryboard = UIStoryboard(name: "Main", bundle: nil)
+                let homeController: GalleryViewController = mainStoryboard.instantiateViewController(withIdentifier: "GalleryViewController") as! GalleryViewController
+                homeController.items = imageURLS
+                guard let tabBarVC = UIApplication.shared.windows.filter({$0.isKeyWindow}).first?.rootViewController as? UITabBarController else { return }
+                if let currentNavController = tabBarVC.selectedViewController as? UINavigationController {
+                    currentNavController.pushViewController(homeController, animated: true)
+                }
+                
             }
+    
         }
         
     }
+
 
     func userNotificationCenter(_ center: UNUserNotificationCenter,
                                   willPresent notification: UNNotification,
@@ -253,21 +263,24 @@ extension LocationService: UNUserNotificationCenterDelegate {
     
 
     func scheduleLocalNotification(alert:String, identifier: String = "fence", imageURLS: [String]?) {
-            let content = UNMutableNotificationContent()
-            let requestIdentifier = identifier
-            content.badge = 0
-            content.title = "Fence Region"
-            content.body = alert
-            content.sound = UNNotificationSound.default
+        let content = UNMutableNotificationContent()
+        let requestIdentifier = UUID().uuidString
+        content.badge = 0
+        content.title = "Fence Region"
+        content.body = alert
+        content.sound = UNNotificationSound.default
         if let _ = imageURLS {
             content.userInfo = ["imgurls":imageURLS!]
+            content.title = "HSTRY"
+            content.body = "There is HSTRY here! Click to see!"
         }
-            let trigger = UNTimeIntervalNotificationTrigger.init(timeInterval: 1.0, repeats: false)
-            let request = UNNotificationRequest(identifier: requestIdentifier, content: content, trigger: trigger)
-            UNUserNotificationCenter.current().add(request) { (error:Error?) in
-                print("Notification Register Success")
-            }
+        
+        let trigger = UNTimeIntervalNotificationTrigger.init(timeInterval: 1.0, repeats: false)
+        let request = UNNotificationRequest(identifier: requestIdentifier, content: content, trigger: trigger)
+        UNUserNotificationCenter.current().add(request) { (error:Error?) in
+            print("Notification Register Success")
         }
+    }
  
 }
 
