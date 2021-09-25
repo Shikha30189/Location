@@ -107,13 +107,13 @@ final class LocationService: NSObject {
         AppDelegate.ref.child("Regions").observeSingleEvent(of: .value) { snapshot in
             
             if let tempDic : Dictionary = snapshot.value as? Dictionary<String,Any> {
-                
+                var hstryHotspotRegionList = [[String: Any]]()
                 for key in tempDic.keys {
                     let selectedDic = tempDic[key] as! Dictionary<String,Any>
                     let latittude = selectedDic["Latitude"] as! Double
                     let longitude = selectedDic["Longitude"] as! Double
                     let coords = CLLocationCoordinate2D(latitude: latittude, longitude: longitude)
-
+                    
                     if region.contains(coords) {
                         
                        let regionID = selectedDic["rid"] as? String
@@ -125,12 +125,14 @@ final class LocationService: NSObject {
                         if let currentLocation = self.myLocation {
                             let hstryHotspotRegion = CLCircularRegion(center: coords, radius: innerRadius, identifier: "hstryHotspotRegion")
                             if hstryHotspotRegion.contains(currentLocation.coordinate) {
-                                // schedule notification
-                                self.fetchDataInRegion(regionIdentifier: regionID ?? "abc")
+                                hstryHotspotRegionList.append(selectedDic)
                             }
                         }
                         
                     }
+                }
+                if let selctedRgionID = self.minimumDistanceBetweenCoordinates(arrRegions: hstryHotspotRegionList,currentLocation: self.myLocation) {
+                    self.fetchDataInRegion(regionIdentifier: selctedRgionID)
                 }
             }
             
@@ -138,6 +140,30 @@ final class LocationService: NSObject {
         }
     }
     
+    
+    func minimumDistanceBetweenCoordinates(arrRegions: [[String: Any]], currentLocation: CLLocation?) -> String? {
+        var selectedDic:[String: Any]?
+        if arrRegions.count == 0 {
+            return nil
+        } else if arrRegions.count == 1 {
+            selectedDic = arrRegions.first
+        } else {
+            if let myLocation = currentLocation {
+                var distanceArr = [Double]()
+                for element in arrRegions {
+                    let latittude = element["Latitude"] as! Double
+                    let longitude = element["Longitude"] as! Double
+                    let regionLocation = CLLocation(latitude: latittude, longitude: longitude)
+                    distanceArr.append(myLocation.distance(from: regionLocation))
+                }
+                let minimumDistanc = distanceArr.min()
+                selectedDic = arrRegions[distanceArr.firstIndex(of: minimumDistanc ?? 0.0) ?? 0]
+            }
+            
+        }
+        return (selectedDic != nil) ? selectedDic!["rid"] as? String: nil
+    }
+
     
     func fetchDataInRegion(regionIdentifier: String, callback: CallBack? = nil) {
         AppDelegate.ref.child("Posts").queryOrdered(byChild: "regionid").queryEqual(toValue : regionIdentifier).observeSingleEvent(of: .value) { snapshot in
@@ -232,7 +258,6 @@ extension LocationService: UNUserNotificationCenterDelegate {
         if let imageURLS = response.notification.request.content.userInfo["imgurls"] as? [String] {
             var controller =  UIApplication.getTopViewController()
             if controller is GalleryViewController {
-                
                 //reload data
                 (controller as? GalleryViewController)?.items = imageURLS
                 (controller as? GalleryViewController)?.refreshData()

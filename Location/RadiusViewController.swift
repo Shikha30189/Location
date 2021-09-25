@@ -20,6 +20,10 @@ class RadiusViewController: UIViewController {
         outerTextField.text = String(outerRadius)
 
     }
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        navigationController?.setNavigationBarHidden(true, animated: animated)
+    }
     
     @IBAction func backgroundTapped(_ sender: Any) {
         view.endEditing(true)

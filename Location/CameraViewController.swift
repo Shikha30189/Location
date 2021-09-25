@@ -173,8 +173,9 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, A
                     if let tempDic : Dictionary = snapshot.value as? Dictionary<String,Any> {
                         
                         var isRegion = false
-                        var regionID: String?
-                        
+                        //var regionID: String?
+                        var hstryHotspotRegionList = [[String: Any]]()
+
                         for key in tempDic.keys {
                             let selectedDic = tempDic[key] as! Dictionary<String,Any>
                             let latittude = selectedDic["Latitude"] as! Double
@@ -184,14 +185,17 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, A
                             let region = CLCircularRegion(center: CLLocationCoordinate2D(latitude: latittude, longitude: longitude), radius: innerRadius, identifier: "test")
                             
                             if region.contains(latestLocation.coordinate) {
-                                regionID = selectedDic["rid"] as? String
+                                hstryHotspotRegionList.append(selectedDic)
+                               // regionID = selectedDic["rid"] as? String
                                 isRegion = true
-                                break
+                                //break
                             }
                         }
                         if isRegion {
                             // Region Exist
-                            self.saveImage(rid: regionID!, imageURL: imageURL)
+                            if let selctedRgionID = self.appDelegate.locationServiceObject.minimumDistanceBetweenCoordinates(arrRegions: hstryHotspotRegionList,currentLocation: latestLocation) {
+                                self.saveImage(rid: selctedRgionID, imageURL: imageURL)
+                            }
                         } else {
                             let uuid = self.generateUuid()
                             AppDelegate.ref.child("Regions").childByAutoId().setValue([
