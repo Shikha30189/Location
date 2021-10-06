@@ -11,7 +11,7 @@ import UIKit
 import CoreLocation
 import UserNotifications
 import Firebase
-
+import FCAlertView
 
 enum Result<T> {
   case success(T)
@@ -27,14 +27,22 @@ final class LocationService: NSObject {
     var myLocation: CLLocation?
     let appDelegate = UIApplication.shared.delegate as! AppDelegate
     let localFence = "LocalFence"
+    var previousLocation: CLLocation?
+    var currentLocation: CLLocation?
+    var filteredRegions = [[String: Any]]()
+    var lastSavedHstryRegionID: String?
+    var  alert:FCAlertView?
+
 
     init(manager: CLLocationManager = .init()) {
         super.init()
         manager.allowsBackgroundLocationUpdates = true
         manager.activityType = .automotiveNavigation
         manager.desiredAccuracy = kCLLocationAccuracyBest
+        manager.distanceFilter = 2
         self.manager = manager
         self.manager.delegate = self
+        self.manager.startUpdatingLocation()
         registerNotifications()
     }
 
@@ -140,7 +148,7 @@ final class LocationService: NSObject {
         }
     }
     
-    
+
     func minimumDistanceBetweenCoordinates(arrRegions: [[String: Any]], currentLocation: CLLocation?) -> String? {
         var selectedDic:[String: Any]?
         if arrRegions.count == 0 {
@@ -165,7 +173,7 @@ final class LocationService: NSObject {
     }
 
     
-    func fetchDataInRegion(regionIdentifier: String, callback: CallBack? = nil) {
+    func fetchDataInRegion(regionIdentifier: String, callback: ((Bool) -> Void)? = nil) {
         AppDelegate.ref.child("Posts").queryOrdered(byChild: "regionid").queryEqual(toValue : regionIdentifier).observeSingleEvent(of: .value) { snapshot in
             
             var imgURLS = [String]()
@@ -176,12 +184,12 @@ final class LocationService: NSObject {
                 }
             }
             self.scheduleLocalNotification(alert: "\(String(describing:  snapshot.value))", imageURLS: imgURLS)
-            callback?()
+            callback?(true)
             
         } withCancel: { error in
             print("POST ERROR")
             self.scheduleLocalNotification(alert: "ERROR", imageURLS: nil)
-            callback?()
+            callback?(false)
         }
         
     }
@@ -204,6 +212,22 @@ final class LocationService: NSObject {
 
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         if let location = locations.last {
+           // showForegroundDataAlert(imageUrls: [""])
+            if previousLocation == nil, currentLocation == nil {
+                previousLocation = location
+                currentLocation = location
+            }
+            if checkDistanceBetweenCoordinates() {
+                // create region of 40m, fetch data from server and find the nearest hstry spot
+                previousLocation = location
+                currentLocation = location
+                regionHandlingInForeground()
+                
+            } else {
+                // locally fetch the nearest hstry spot
+                currentLocation = location
+                checkContinuousRegionForLocationUpdate()
+            }
             myLocation = location
             newLocation?(.success(location))
             newLocation = nil
@@ -224,7 +248,7 @@ final class LocationService: NSObject {
                 AppDelegate.backgroundDataTaskId = .invalid
             })
         
-            fetchDataInRegion(regionIdentifier: region.identifier) {
+            fetchDataInRegion(regionIdentifier: region.identifier) { isData in
                 UIApplication.shared.endBackgroundTask(AppDelegate.backgroundDataTaskId)
                 AppDelegate.backgroundDataTaskId = .invalid
             }
@@ -233,7 +257,7 @@ final class LocationService: NSObject {
     
     func locationManager(_ manager: CLLocationManager, didExitRegion region: CLRegion) {
             if region.identifier == localFence {
-                scheduleLocalNotification(alert: "didExitRegion", imageURLS: nil)
+                //scheduleLocalNotification(alert: "didExitRegion", imageURLS: nil)
                 getLocation { [weak self] result in
                     if case let .success(latestLocation) = result {
                         self?.initialiseAllRegions(with: latestLocation.coordinate)
@@ -256,56 +280,190 @@ extension LocationService: UNUserNotificationCenterDelegate {
     func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
         
         if let imageURLS = response.notification.request.content.userInfo["imgurls"] as? [String] {
-            var controller =  UIApplication.getTopViewController()
-            if controller is GalleryViewController {
-                //reload data
-                (controller as? GalleryViewController)?.items = imageURLS
-                (controller as? GalleryViewController)?.refreshData()
-                
-            } else {
-                let mainStoryboard = UIStoryboard(name: "Main", bundle: nil)
-                let homeController: GalleryViewController = mainStoryboard.instantiateViewController(withIdentifier: "GalleryViewController") as! GalleryViewController
-                homeController.items = imageURLS
-                guard let tabBarVC = UIApplication.shared.windows.filter({$0.isKeyWindow}).first?.rootViewController as? UITabBarController else { return }
-                if let currentNavController = tabBarVC.selectedViewController as? UINavigationController {
-                    currentNavController.pushViewController(homeController, animated: true)
-                }
-                
-            }
-    
+                appDelegate.imageURLS = imageURLS
         }
-        
+    }
+    
+    func navigateGalleryScreen(imageURLS: [String]) {
+        let controller =  UIApplication.getTopViewController()
+        if controller is GalleryViewController {
+            //reload data
+            (controller as? GalleryViewController)?.items = imageURLS
+            (controller as? GalleryViewController)?.refreshData()
+            
+        } else {
+            let mainStoryboard = UIStoryboard(name: "Main", bundle: nil)
+            let homeController: GalleryViewController = mainStoryboard.instantiateViewController(withIdentifier: "GalleryViewController") as! GalleryViewController
+            homeController.items = imageURLS
+            guard let tabBarVC = UIApplication.shared.windows.filter({$0.isKeyWindow}).first?.rootViewController as? UITabBarController else { return }
+            if let currentNavController = tabBarVC.selectedViewController as? UINavigationController {
+                currentNavController.pushViewController(homeController, animated: true)
+            }
+            
+        }
     }
 
 
     func userNotificationCenter(_ center: UNUserNotificationCenter,
                                   willPresent notification: UNNotification,
                                   withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
-          let userInfo = notification.request.content.userInfo
-          print(userInfo)
-          completionHandler([.alert,.sound])
+//          let userInfo = notification.request.content.userInfo
+//          print(userInfo)
+//          completionHandler([.alert,.sound])
       }
     
 
-    func scheduleLocalNotification(alert:String, identifier: String = "fence", imageURLS: [String]?) {
-        let content = UNMutableNotificationContent()
-        let requestIdentifier = UUID().uuidString
-        content.badge = 0
-        content.title = "Fence Region"
-        content.body = alert
-        content.sound = UNNotificationSound.default
-        if let _ = imageURLS {
-            content.userInfo = ["imgurls":imageURLS!]
-            content.title = "HSTRY"
-            content.body = "There is HSTRY here! Click to see!"
-        }
-        
-        let trigger = UNTimeIntervalNotificationTrigger.init(timeInterval: 1.0, repeats: false)
-        let request = UNNotificationRequest(identifier: requestIdentifier, content: content, trigger: trigger)
-        UNUserNotificationCenter.current().add(request) { (error:Error?) in
-            print("Notification Register Success")
+    func scheduleLocalNotification(alert:String, identifier: String = UUID().uuidString, imageURLS: [String]?) {
+        if  UIApplication.shared.applicationState == .active {
+            if let _ = imageURLS {
+                showForegroundDataAlert(imageUrls: imageURLS!)
+            }
+        } else {
+            let content = UNMutableNotificationContent()
+            let requestIdentifier = "Fence"
+            content.badge = 0
+            content.title = "Fence Region"
+            content.body = alert
+            content.sound = UNNotificationSound.default
+            if let _ = imageURLS {
+                content.userInfo = ["imgurls":imageURLS!]
+                content.title = "HSTRY"
+                content.body = "There is HSTRY here! Click to see!"
+            }
+            
+            let trigger = UNTimeIntervalNotificationTrigger.init(timeInterval: 1.0, repeats: false)
+            let request = UNNotificationRequest(identifier: requestIdentifier, content: content, trigger: trigger)
+            UNUserNotificationCenter.current().add(request) { (error:Error?) in
+                print("Notification Register Success")
+            }
         }
     }
  
 }
 
+extension LocationService {
+  
+    func checkDistanceBetweenCoordinates() -> Bool {
+        var isDistanceGreater = false
+        if let prevLoc = previousLocation, let currLoc = currentLocation {
+            isDistanceGreater =  (prevLoc.distance(from: currLoc) > 20.0) ? true : false
+        }
+        return isDistanceGreater
+        
+    }
+
+    func regionHandlingInForeground() {
+        AppDelegate.ref.child("Regions").observeSingleEvent(of: .value) { snapshot in
+            if let tempDic : Dictionary = snapshot.value as? Dictionary<String,Any> {
+                self.filteredRegions = [[String: Any]]()
+                for key in tempDic.keys {
+                    let selectedDic = tempDic[key] as! Dictionary<String,Any>
+                    let latittude = selectedDic["Latitude"] as! Double
+                    let longitude = selectedDic["Longitude"] as! Double
+                    let coords = CLLocationCoordinate2D(latitude: latittude, longitude: longitude)
+                    
+                    if let currentLoc = self.previousLocation {
+                        let hstryHotspotRegion = CLCircularRegion(center:currentLoc.coordinate, radius: AppDelegate.localGPSRadius, identifier: "hstryHotspotRegion")
+                        if hstryHotspotRegion.contains(coords) {
+                            self.filteredRegions.append(selectedDic)
+                        }
+                    }
+                }
+                if let selctedRgionID = self.minimumDistanceBetweenCoordinates(arrRegions: self.filteredRegions,currentLocation: self.currentLocation) {
+                    if selctedRgionID != self.lastSavedHstryRegionID {
+                        self.lastSavedHstryRegionID = selctedRgionID
+                        self.fetchDataInRegion(regionIdentifier: selctedRgionID) { isData in
+                            
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    func checkContinuousRegionForLocationUpdate() {
+        if let selctedRgionID = self.minimumDistanceBetweenCoordinates(arrRegions: self.filteredRegions,currentLocation: self.currentLocation) {
+            if selctedRgionID != self.lastSavedHstryRegionID {
+                self.lastSavedHstryRegionID = selctedRgionID
+                self.fetchDataInRegion(regionIdentifier: selctedRgionID) { isData in
+                    
+                }
+            }
+        }
+    }
+    
+    func dataActiveState(region: CLCircularRegion,  completion: @escaping ((Bool) -> Void)) {
+        AppDelegate.ref.child("Regions").observeSingleEvent(of: .value) { snapshot in
+            
+            if let tempDic : Dictionary = snapshot.value as? Dictionary<String,Any> {
+                var hstryHotspotRegionList = [[String: Any]]()
+                for key in tempDic.keys {
+                    let selectedDic = tempDic[key] as! Dictionary<String,Any>
+                    let latittude = selectedDic["Latitude"] as! Double
+                    let longitude = selectedDic["Longitude"] as! Double
+                    let coords = CLLocationCoordinate2D(latitude: latittude, longitude: longitude)
+                    
+                    if region.contains(coords) {
+                        /// Check if user lcurrent location is in the HSTRY region, if so, trigger notification
+                        if let currentLocation = self.myLocation {
+                            let hstryHotspotRegion = CLCircularRegion(center: coords, radius: AppDelegate.localGPSRadius, identifier: "hstryHotspotRegion")
+                            if hstryHotspotRegion.contains(currentLocation.coordinate) {
+                                hstryHotspotRegionList.append(selectedDic)
+                            }
+                        }
+                    }
+                }
+                if let selctedRgionID = self.minimumDistanceBetweenCoordinates(arrRegions: hstryHotspotRegionList,currentLocation: self.myLocation) {
+                    self.fetchDataInRegion(regionIdentifier: selctedRgionID) { isData in
+                        completion(isData)
+                    }
+                } else {
+                    completion(false)
+                }
+            } else {
+                completion(false)
+            }
+        }
+    }
+    
+    func clearAllForegroundRegions() {
+        manager.stopUpdatingLocation()
+        previousLocation = nil
+        currentLocation = nil
+        filteredRegions.removeAll()
+        lastSavedHstryRegionID = nil
+    }
+}
+
+extension LocationService: FCAlertViewDelegate {
+    func showForegroundDataAlert(imageUrls: [String]) {
+        if let topViewC = UIApplication.getTopViewController() {
+            //alert.removeFromSuperview()
+            if let foundView = topViewC.view.window?.viewWithTag(100) {
+                foundView.removeFromSuperview()
+                alert = nil
+            }
+            alert = FCAlertView()
+            
+            alert!.delegate = self
+            alert!.addButton("Dismiss") {
+                
+            }
+            alert!.addButton("Show") { [weak self] in
+                self?.navigateGalleryScreen(imageURLS: imageUrls)
+            }
+            alert!.tag = 100
+            alert!.dismissOnOutsideTouch = false
+            alert!.overrideForcedDismiss = true
+            alert!.hideDoneButton = true
+            alert!.showAlert(inView: topViewC,
+                             withTitle: "HSTRY",
+                             withSubtitle: "There is HSTRY here! Click to see",
+                             withCustomImage: nil,
+                             withDoneButtonTitle: nil,
+                             andButtons: nil)
+        }
+        
+    }
+        
+}

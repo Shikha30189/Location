@@ -16,12 +16,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     var window: UIWindow?
     var locationServiceObject: LocationService!
-    
     static let ref: DatabaseReference = Database.database().reference()
     static var backgroundTaskId: UIBackgroundTaskIdentifier = .invalid
     static var backgroundDataTaskId: UIBackgroundTaskIdentifier = .invalid
     static let innerRadiusKey = "InnerRadius"
     static let outerRadiusKey = "OuterRadius"
+    static let localGPSRadius = 40.0
+    var imageURLS: [String]?
 
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
@@ -37,6 +38,26 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         locationServiceObject = LocationService()
         window?.makeKeyAndVisible()
         return true
+    }
+    
+    
+    func applicationDidBecomeActive(_ application: UIApplication) {
+        //fetch current Location and find the images in thae region
+        locationServiceObject.getLocation { [weak self] result in
+            if case let .success(latestLocation) = result {
+                let region = CLCircularRegion(center: latestLocation.coordinate, radius: AppDelegate.localGPSRadius, identifier: "abc")
+                self?.locationServiceObject.dataActiveState(region: region, completion: { [weak self] isData in
+                    if !isData, let urls = self?.imageURLS {
+                        self?.locationServiceObject.navigateGalleryScreen(imageURLS: urls)
+                    }
+                })
+            }
+        }
+        
+    }
+    
+    func applicationDidEnterBackground(_ application: UIApplication) {
+        locationServiceObject.clearAllForegroundRegions()
     }
 
 }

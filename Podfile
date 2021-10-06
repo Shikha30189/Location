@@ -15,8 +15,7 @@ target 'Location' do
   pod 'SDWebImage', '~> 5.0'
   pod 'INSPhotoGallery' 
   pod 'Haneke'
-#  pod 'SwiftLocation/Core'
-#  pod 'SwiftLocation/BeaconBroadcaster'
+  pod 'FCAlertView'
 
   target 'LocationTests' do
     inherit! :search_paths

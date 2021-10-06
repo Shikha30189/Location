@@ -1,4 +1,5 @@
 PODS:
+  - FCAlertView (1.4.0)
   - Firebase (6.34.0):
     - Firebase/Core (= 6.34.0)
   - Firebase/Core (6.34.0):
@@ -85,6 +86,7 @@ PODS:
   - SwiftPhotoGallery (3.4.1)
 
 DEPENDENCIES:
+  - FCAlertView
   - Firebase
   - Firebase/Database
   - Firebase/Storage
@@ -96,6 +98,7 @@ DEPENDENCIES:
 
 SPEC REPOS:
   trunk:
+    - FCAlertView
     - Firebase
     - FirebaseAnalytics
     - FirebaseCore
@@ -117,6 +120,7 @@ SPEC REPOS:
     - SwiftPhotoGallery
 
 SPEC CHECKSUMS:
+  FCAlertView: fdddd63381898c1d1a5a20c9f084fbd2c6d12f8b
   Firebase: c23a36d9e4cdf7877dfcba8dd0c58add66358999
   FirebaseAnalytics: 3bb096873ee0d7fa4b6c70f5e9166b6da413cc7f
   FirebaseCore: d3a978a3cfa3240bf7e4ba7d137fdf5b22b628ec
@@ -137,6 +141,6 @@ SPEC CHECKSUMS:
   SwiftKeychainWrapper: 807ba1d63c33a7d0613288512399cd1eda1e470c
   SwiftPhotoGallery: 795b79e2596beb160fb978e232603da0811006ce
 
-PODFILE CHECKSUM: c2fcf35b7a0a075d5f687fb4e066e7958fcdc4a2
+PODFILE CHECKSUM: ea350e90542f21452f976ee98271aeb26029bcab
 
 COCOAPODS: 1.10.1
