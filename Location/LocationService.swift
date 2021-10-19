@@ -364,25 +364,6 @@ extension LocationService {
                 }
             }
         }
-//        AppDelegate.ref.child("Regions").observeSingleEvent(of: .value) { snapshot in
-//            if let tempDic : Dictionary = snapshot.value as? Dictionary<String,Any> {
-//                self.filteredRegions = [[String: Any]]()
-//                for key in tempDic.keys {
-//                    let selectedDic = tempDic[key] as! Dictionary<String,Any>
-//                    let latittude = selectedDic["Latitude"] as! Double
-//                    let longitude = selectedDic["Longitude"] as! Double
-//                    let coords = CLLocationCoordinate2D(latitude: latittude, longitude: longitude)
-//
-//                    if let currentLoc = self.previousLocation {
-//                        let hstryHotspotRegion = CLCircularRegion(center:currentLoc.coordinate, radius: (AppDelegate.localGPSRadius * 2.0), identifier: "hstryHotspotRegion")
-//                        if hstryHotspotRegion.contains(coords) {
-//                            self.filteredRegions.append(selectedDic)
-//                        }
-//                    }
-//                }
-//                self.fetchHystryData()
-//            }
-//        }
     }
 
     func checkContinuousRegionForLocationUpdate() {
@@ -426,37 +407,7 @@ extension LocationService {
             }
             completion(false)
         }
-//        AppDelegate.ref.child("Regions").observeSingleEvent(of: .value) { snapshot in
-//
-//            if let tempDic : Dictionary = snapshot.value as? Dictionary<String,Any> {
-//                var hstryHotspotRegionList = [[String: Any]]()
-//                for key in tempDic.keys {
-//                    let selectedDic = tempDic[key] as! Dictionary<String,Any>
-//                    let latittude = selectedDic["Latitude"] as! Double
-//                    let longitude = selectedDic["Longitude"] as! Double
-//                    let coords = CLLocationCoordinate2D(latitude: latittude, longitude: longitude)
-//
-//                    if region.contains(coords) {
-//                        /// Check if user lcurrent location is in the HSTRY region, if so, trigger notification
-//                        if let currentLocation = self.myLocation {
-//                            let hstryHotspotRegion = CLCircularRegion(center: coords, radius: (AppDelegate.localGPSRadius * 2.0), identifier: "hstryHotspotRegion")
-//                            if hstryHotspotRegion.contains(currentLocation.coordinate) {
-//                                hstryHotspotRegionList.append(selectedDic)
-//                            }
-//                        }
-//                    }
-//                }
-//                if let selctedRgionID = self.minimumDistanceBetweenCoordinates(arrRegions: hstryHotspotRegionList,currentLocation: self.myLocation) {
-//                    self.fetchDataInRegion(regionIdentifier: selctedRgionID) { isData in
-//                        completion(isData)
-//                    }
-//                } else {
-//                    completion(false)
-//                }
-//            } else {
-//                completion(false)
-//            }
-//        }
+
     }
     
     func getHystrHostspotRegions(region: CLCircularRegion ,completion: @escaping (([[String: Any]]?) -> Void)) {
@@ -471,16 +422,7 @@ extension LocationService {
                     let coords = CLLocationCoordinate2D(latitude: latittude, longitude: longitude)
 
                     if region.contains(coords) {
-                    
-                        /// Check if user lcurrent location is in the HSTRY region, if so, trigger notification
                         hstryHotspotRegionList.append(selectedDic)
-
-//                        if let currentLocation = self.myLocation {
-//                            let hstryHotspotRegion = CLCircularRegion(center: coords, radius: (AppDelegate.localGPSRadius * 2.0), identifier: "hstryHotspotRegion")
-//                            if hstryHotspotRegion.contains(currentLocation.coordinate) {
-//                                hstryHotspotRegionList.append(selectedDic)
-//                            }
-//                        }
                     }
                 }
                 completion(hstryHotspotRegionList)
