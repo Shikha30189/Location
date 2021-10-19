@@ -42,7 +42,6 @@ final class LocationService: NSObject {
         manager.distanceFilter = 2
         self.manager = manager
         self.manager.delegate = self
-        self.manager.startUpdatingLocation()
         registerNotifications()
     }
 
@@ -216,17 +215,20 @@ final class LocationService: NSObject {
             if previousLocation == nil, currentLocation == nil {
                 previousLocation = location
                 currentLocation = location
-            }
-            if checkDistanceBetweenCoordinates() {
-                // create region of 40m, fetch data from server and find the nearest hstry spot
-                previousLocation = location
-                currentLocation = location
                 regionHandlingInForeground()
-                
+
             } else {
-                // locally fetch the nearest hstry spot
-                currentLocation = location
-                checkContinuousRegionForLocationUpdate()
+                if checkDistanceBetweenCoordinates(firstCoordinate: previousLocation, secondCoordinates: currentLocation) {
+                    // create region of 40m, fetch data from server and find the nearest hstry spot
+                    previousLocation = location
+                    currentLocation = location
+                    regionHandlingInForeground()
+                    
+                } else {
+                    // locally fetch the nearest hstry spot
+                    currentLocation = location
+                    checkContinuousRegionForLocationUpdate()
+                }
             }
             myLocation = location
             newLocation?(.success(location))
@@ -241,8 +243,7 @@ final class LocationService: NSObject {
     }
     
     func locationManager(_ manager: CLLocationManager, didEnterRegion region: CLRegion) {
-        if region.identifier != localFence {
-            
+        if region.identifier != localFence && UIApplication.shared.applicationState != .active {
             AppDelegate.backgroundTaskId = UIApplication.shared.beginBackgroundTask(withName: "com.HSTRY.FetchData", expirationHandler: {
                 UIApplication.shared.endBackgroundTask(AppDelegate.backgroundDataTaskId)
                 AppDelegate.backgroundDataTaskId = .invalid
@@ -343,58 +344,124 @@ extension LocationService: UNUserNotificationCenterDelegate {
 
 extension LocationService {
   
-    func checkDistanceBetweenCoordinates() -> Bool {
+    func checkDistanceBetweenCoordinates(firstCoordinate: CLLocation?, secondCoordinates: CLLocation?) -> Bool {
         var isDistanceGreater = false
-        if let prevLoc = previousLocation, let currLoc = currentLocation {
-            isDistanceGreater =  (prevLoc.distance(from: currLoc) > 20.0) ? true : false
+        if let prevLoc = firstCoordinate ?? previousLocation, let currLoc = secondCoordinates ?? currentLocation {
+            isDistanceGreater =  (prevLoc.distance(from: currLoc) > AppDelegate.localGPSRadius) ? true : false
         }
         return isDistanceGreater
         
     }
 
     func regionHandlingInForeground() {
-        AppDelegate.ref.child("Regions").observeSingleEvent(of: .value) { snapshot in
-            if let tempDic : Dictionary = snapshot.value as? Dictionary<String,Any> {
-                self.filteredRegions = [[String: Any]]()
-                for key in tempDic.keys {
-                    let selectedDic = tempDic[key] as! Dictionary<String,Any>
-                    let latittude = selectedDic["Latitude"] as! Double
-                    let longitude = selectedDic["Longitude"] as! Double
-                    let coords = CLLocationCoordinate2D(latitude: latittude, longitude: longitude)
-                    
-                    if let currentLoc = self.previousLocation {
-                        let hstryHotspotRegion = CLCircularRegion(center:currentLoc.coordinate, radius: AppDelegate.localGPSRadius, identifier: "hstryHotspotRegion")
-                        if hstryHotspotRegion.contains(coords) {
-                            self.filteredRegions.append(selectedDic)
-                        }
-                    }
-                }
-                if let selctedRgionID = self.minimumDistanceBetweenCoordinates(arrRegions: self.filteredRegions,currentLocation: self.currentLocation) {
-                    if selctedRgionID != self.lastSavedHstryRegionID {
-                        self.lastSavedHstryRegionID = selctedRgionID
-                        self.fetchDataInRegion(regionIdentifier: selctedRgionID) { isData in
-                            
-                        }
-                    }
+        if let currentLoc = self.previousLocation {
+            let hstryHotspotRegion = CLCircularRegion(center:currentLoc.coordinate, radius: (AppDelegate.localGPSRadius * 2.0), identifier: "hstryHotspotRegion")
+            getHystrHostspotRegions(region: hstryHotspotRegion) { [weak self] hotspotRegions in
+                if let regions = hotspotRegions {
+                    self?.filteredRegions = regions
+                    self?.fetchHystryData(completion: { isData in
+                    })
                 }
             }
         }
+//        AppDelegate.ref.child("Regions").observeSingleEvent(of: .value) { snapshot in
+//            if let tempDic : Dictionary = snapshot.value as? Dictionary<String,Any> {
+//                self.filteredRegions = [[String: Any]]()
+//                for key in tempDic.keys {
+//                    let selectedDic = tempDic[key] as! Dictionary<String,Any>
+//                    let latittude = selectedDic["Latitude"] as! Double
+//                    let longitude = selectedDic["Longitude"] as! Double
+//                    let coords = CLLocationCoordinate2D(latitude: latittude, longitude: longitude)
+//
+//                    if let currentLoc = self.previousLocation {
+//                        let hstryHotspotRegion = CLCircularRegion(center:currentLoc.coordinate, radius: (AppDelegate.localGPSRadius * 2.0), identifier: "hstryHotspotRegion")
+//                        if hstryHotspotRegion.contains(coords) {
+//                            self.filteredRegions.append(selectedDic)
+//                        }
+//                    }
+//                }
+//                self.fetchHystryData()
+//            }
+//        }
     }
 
     func checkContinuousRegionForLocationUpdate() {
-        if let selctedRgionID = self.minimumDistanceBetweenCoordinates(arrRegions: self.filteredRegions,currentLocation: self.currentLocation) {
-            if selctedRgionID != self.lastSavedHstryRegionID {
-                self.lastSavedHstryRegionID = selctedRgionID
-                self.fetchDataInRegion(regionIdentifier: selctedRgionID) { isData in
-                    
-                }
-            }
+        fetchHystryData { isData in
         }
     }
     
+    func fetchHystryData(completion: @escaping ((Bool) -> Void)) {
+        if let selctedRgionID = self.minimumDistanceBetweenCoordinates(arrRegions: self.filteredRegions,currentLocation: self.currentLocation) {
+            let selectedArrays = self.filteredRegions.filter({$0["rid"] as! String == selctedRgionID})
+            if selectedArrays.count > 0 {
+                let latittude = selectedArrays.first!["Latitude"] as! Double
+                let longitude = selectedArrays.first!["Longitude"] as! Double
+                let isMoreThanTwenty = checkDistanceBetweenCoordinates(firstCoordinate: CLLocation(latitude: latittude, longitude:longitude), secondCoordinates: currentLocation)
+                if selctedRgionID != self.lastSavedHstryRegionID, !isMoreThanTwenty {
+                    self.lastSavedHstryRegionID = selctedRgionID
+                    self.fetchDataInRegion(regionIdentifier: selctedRgionID) { isData in
+                        completion(isData)
+                    }
+                }
+                completion(false)
+            }
+            completion(false)
+        }
+        completion(false)
+    }
+    
     func dataActiveState(region: CLCircularRegion,  completion: @escaping ((Bool) -> Void)) {
+        var hstryHotspotRegionList = [[String: Any]]()
+        getHystrHostspotRegions(region: region) { [weak self] hotspotRegions in
+            if let regions = hotspotRegions, let currLoc = self?.myLocation {
+                hstryHotspotRegionList = regions
+                self?.filteredRegions = regions
+                if let selctedRgionID = self?.minimumDistanceBetweenCoordinates(arrRegions: hstryHotspotRegionList,currentLocation: currLoc) {
+                    self?.fetchDataInRegion(regionIdentifier: selctedRgionID) { isData in
+                        completion(isData)
+                    }
+                } else {
+                    completion(false)
+                }
+            }
+            completion(false)
+        }
+//        AppDelegate.ref.child("Regions").observeSingleEvent(of: .value) { snapshot in
+//
+//            if let tempDic : Dictionary = snapshot.value as? Dictionary<String,Any> {
+//                var hstryHotspotRegionList = [[String: Any]]()
+//                for key in tempDic.keys {
+//                    let selectedDic = tempDic[key] as! Dictionary<String,Any>
+//                    let latittude = selectedDic["Latitude"] as! Double
+//                    let longitude = selectedDic["Longitude"] as! Double
+//                    let coords = CLLocationCoordinate2D(latitude: latittude, longitude: longitude)
+//
+//                    if region.contains(coords) {
+//                        /// Check if user lcurrent location is in the HSTRY region, if so, trigger notification
+//                        if let currentLocation = self.myLocation {
+//                            let hstryHotspotRegion = CLCircularRegion(center: coords, radius: (AppDelegate.localGPSRadius * 2.0), identifier: "hstryHotspotRegion")
+//                            if hstryHotspotRegion.contains(currentLocation.coordinate) {
+//                                hstryHotspotRegionList.append(selectedDic)
+//                            }
+//                        }
+//                    }
+//                }
+//                if let selctedRgionID = self.minimumDistanceBetweenCoordinates(arrRegions: hstryHotspotRegionList,currentLocation: self.myLocation) {
+//                    self.fetchDataInRegion(regionIdentifier: selctedRgionID) { isData in
+//                        completion(isData)
+//                    }
+//                } else {
+//                    completion(false)
+//                }
+//            } else {
+//                completion(false)
+//            }
+//        }
+    }
+    
+    func getHystrHostspotRegions(region: CLCircularRegion ,completion: @escaping (([[String: Any]]?) -> Void)) {
         AppDelegate.ref.child("Regions").observeSingleEvent(of: .value) { snapshot in
-            
+
             if let tempDic : Dictionary = snapshot.value as? Dictionary<String,Any> {
                 var hstryHotspotRegionList = [[String: Any]]()
                 for key in tempDic.keys {
@@ -402,26 +469,23 @@ extension LocationService {
                     let latittude = selectedDic["Latitude"] as! Double
                     let longitude = selectedDic["Longitude"] as! Double
                     let coords = CLLocationCoordinate2D(latitude: latittude, longitude: longitude)
-                    
+
                     if region.contains(coords) {
+                    
                         /// Check if user lcurrent location is in the HSTRY region, if so, trigger notification
-                        if let currentLocation = self.myLocation {
-                            let hstryHotspotRegion = CLCircularRegion(center: coords, radius: AppDelegate.localGPSRadius, identifier: "hstryHotspotRegion")
-                            if hstryHotspotRegion.contains(currentLocation.coordinate) {
-                                hstryHotspotRegionList.append(selectedDic)
-                            }
-                        }
+                        hstryHotspotRegionList.append(selectedDic)
+
+//                        if let currentLocation = self.myLocation {
+//                            let hstryHotspotRegion = CLCircularRegion(center: coords, radius: (AppDelegate.localGPSRadius * 2.0), identifier: "hstryHotspotRegion")
+//                            if hstryHotspotRegion.contains(currentLocation.coordinate) {
+//                                hstryHotspotRegionList.append(selectedDic)
+//                            }
+//                        }
                     }
                 }
-                if let selctedRgionID = self.minimumDistanceBetweenCoordinates(arrRegions: hstryHotspotRegionList,currentLocation: self.myLocation) {
-                    self.fetchDataInRegion(regionIdentifier: selctedRgionID) { isData in
-                        completion(isData)
-                    }
-                } else {
-                    completion(false)
-                }
+                completion(hstryHotspotRegionList)
             } else {
-                completion(false)
+                completion(nil)
             }
         }
     }

@@ -21,7 +21,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     static var backgroundDataTaskId: UIBackgroundTaskIdentifier = .invalid
     static let innerRadiusKey = "InnerRadius"
     static let outerRadiusKey = "OuterRadius"
-    static let localGPSRadius = 40.0
+    static let localGPSRadius = 20.0
     var imageURLS: [String]?
 
 
@@ -43,9 +43,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     func applicationDidBecomeActive(_ application: UIApplication) {
         //fetch current Location and find the images in thae region
+        locationServiceObject.manager.startUpdatingLocation()
         locationServiceObject.getLocation { [weak self] result in
             if case let .success(latestLocation) = result {
-                let region = CLCircularRegion(center: latestLocation.coordinate, radius: AppDelegate.localGPSRadius, identifier: "abc")
+                let region = CLCircularRegion(center: latestLocation.coordinate, radius: (AppDelegate.localGPSRadius * 2.0), identifier: "abc")
                 self?.locationServiceObject.dataActiveState(region: region, completion: { [weak self] isData in
                     if !isData, let urls = self?.imageURLS {
                         self?.locationServiceObject.navigateGalleryScreen(imageURLS: urls)
