@@ -44,6 +44,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func applicationDidBecomeActive(_ application: UIApplication) {
         //fetch current Location and find the images in thae region
         locationServiceObject.manager.startUpdatingLocation()
+        /*
         locationServiceObject.getLocation { [weak self] result in
             if case let .success(latestLocation) = result {
                 let region = CLCircularRegion(center: latestLocation.coordinate, radius: (AppDelegate.localGPSRadius * 2.0), identifier: "abc")
@@ -54,7 +55,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 })
             }
         }
-        
+       */
     }
     
     func applicationDidEnterBackground(_ application: UIApplication) {

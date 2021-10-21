@@ -181,8 +181,8 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, A
                             let latittude = selectedDic["Latitude"] as! Double
                             let longitude = selectedDic["Longitude"] as! Double
 
-                            let innerRadius  = UserDefaults.standard.double(forKey: AppDelegate.innerRadiusKey)
-                            let region = CLCircularRegion(center: CLLocationCoordinate2D(latitude: latittude, longitude: longitude), radius: innerRadius, identifier: "test")
+//                            let innerRadius  = UserDefaults.standard.double(forKey: AppDelegate.innerRadiusKey)
+                            let region = CLCircularRegion(center: CLLocationCoordinate2D(latitude: latittude, longitude: longitude), radius: (AppDelegate.localGPSRadius * 2.0), identifier: "test")
                             
                             if region.contains(latestLocation.coordinate) {
                                 hstryHotspotRegionList.append(selectedDic)
@@ -211,7 +211,7 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, A
                                 } else {
                                     self?.photoPreviewView.isHidden = true
                                     let innerRadius  = UserDefaults.standard.double(forKey: AppDelegate.innerRadiusKey)
-                                    self?.locationServiceObject.createRegion(coordinate: CLLocationCoordinate2D(latitude: lat, longitude: longi), radius: innerRadius, regionName: uuid)
+//                                    self?.locationServiceObject.createRegion(coordinate: CLLocationCoordinate2D(latitude: lat, longitude: longi), radius: innerRadius, regionName: uuid)
                                     self?.saveImage(rid: uuid, imageURL: imageURL)
                                     print("Region saved successfully!")
                                 }

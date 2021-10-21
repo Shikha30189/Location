@@ -39,10 +39,10 @@ final class LocationService: NSObject {
         manager.allowsBackgroundLocationUpdates = true
         manager.activityType = .automotiveNavigation
         manager.desiredAccuracy = kCLLocationAccuracyBest
-        manager.distanceFilter = 2
+        manager.distanceFilter = 5
         self.manager = manager
         self.manager.delegate = self
-        registerNotifications()
+       // registerNotifications()
     }
 
     var newLocation: LocationResult?
@@ -76,6 +76,7 @@ final class LocationService: NSObject {
     }
     
     func initialiseAllRegions(with userLocation: CLLocationCoordinate2D) {
+        /*
             AppDelegate.backgroundTaskId = UIApplication.shared.beginBackgroundTask(withName: "com.HSTRY.FetchRegions", expirationHandler: {
                 UIApplication.shared.endBackgroundTask(AppDelegate.backgroundTaskId)
                 AppDelegate.backgroundTaskId = .invalid
@@ -89,6 +90,7 @@ final class LocationService: NSObject {
                 UIApplication.shared.endBackgroundTask(AppDelegate.backgroundTaskId)
                 AppDelegate.backgroundTaskId = .invalid
             }
+ */
     }
     
     
@@ -108,6 +110,7 @@ final class LocationService: NSObject {
         }else {
             completion?()
         }
+
     }
     
     func fetchServerRegionToBeMonitored(region: CLCircularRegion, completion: CallBack? = nil) {
@@ -125,7 +128,7 @@ final class LocationService: NSObject {
                         
                        let regionID = selectedDic["rid"] as? String
                         let innerRadius  = UserDefaults.standard.double(forKey: AppDelegate.innerRadiusKey)
-                        self.createRegion(coordinate: coords, radius: innerRadius, regionName: regionID ?? "abc")
+                       // self.createRegion(coordinate: coords, radius: innerRadius, regionName: regionID ?? "abc")
                         
                         
                         /// Check if user lcurrent location is in the HSTRY region, if so, trigger notification
@@ -320,6 +323,7 @@ extension LocationService: UNUserNotificationCenterDelegate {
                 showForegroundDataAlert(imageUrls: imageURLS!)
             }
         } else {
+       /*
             let content = UNMutableNotificationContent()
             let requestIdentifier = "Fence"
             content.badge = 0
@@ -331,12 +335,13 @@ extension LocationService: UNUserNotificationCenterDelegate {
                 content.title = "HSTRY"
                 content.body = "There is HSTRY here! Click to see!"
             }
-            
+
             let trigger = UNTimeIntervalNotificationTrigger.init(timeInterval: 1.0, repeats: false)
             let request = UNNotificationRequest(identifier: requestIdentifier, content: content, trigger: trigger)
             UNUserNotificationCenter.current().add(request) { (error:Error?) in
                 print("Notification Register Success")
             }
+ */
         }
     }
  
@@ -458,6 +463,8 @@ extension LocationService: FCAlertViewDelegate {
             alert!.addButton("Show") { [weak self] in
                 self?.navigateGalleryScreen(imageURLS: imageUrls)
             }
+            alert!.titleColor = .black
+            alert!.subTitleColor = .black
             alert!.tag = 100
             alert!.dismissOnOutsideTouch = false
             alert!.overrideForcedDismiss = true
