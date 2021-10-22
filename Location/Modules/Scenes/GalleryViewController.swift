@@ -18,12 +18,8 @@ class GalleryViewController: UICollectionViewController {
         super.viewDidLoad()
         self.collectionView!.register(CollectionViewCell.self, forCellWithReuseIdentifier: CellReuseIdentifier)
         let layout = UICollectionViewFlowLayout()
-//        layout.itemSize = CGSize(width: 100, height: 100)
         layout.itemSize = CGSize(width: UIScreen.main.bounds.size.width - 10, height: UIScreen.main.bounds.size.height - 50)
-
         self.collectionView!.collectionViewLayout = layout
-        
-        self.initializeItemsWithURLs()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -61,18 +57,6 @@ class GalleryViewController: UICollectionViewController {
         cell.imageView.hnk_setImage(from: url)
         return cell
     }
-    
-    // MARK: Helpers
-    
-    func initializeItemsWithURLs() {
-//        items = ["http://imgs.xkcd.com/comics/election.png",
-//                 "http://imgs.xkcd.com/comics/election.png",
-//                 "http://imgs.xkcd.com/comics/election.png",
-//                 "http://imgs.xkcd.com/comics/election.png",
-//                 "http://imgs.xkcd.com/comics/election.png",
-//                 "http://imgs.xkcd.com/comics/election.png"
-//            ]
-    }
 
 }
 
@@ -98,7 +82,6 @@ class CollectionViewCell: UICollectionViewCell {
         imageView.backgroundColor = UIColor.black
         imageView.clipsToBounds = true
         imageView.contentMode = .scaleToFill
-//        imageView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         self.contentView.addSubview(imageView)
     }
     

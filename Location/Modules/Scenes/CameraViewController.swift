@@ -165,24 +165,26 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, A
         locationServiceObject.getLocation { result in
             if case let .success(latestLocation) = result {
                 
-                let lat = latestLocation.coordinate.latitude
-                let longi = latestLocation.coordinate.longitude
+                let imageLatitude = latestLocation.coordinate.latitude
+                let imageLongitide = latestLocation.coordinate.longitude
                 
                 AppDelegate.ref.child("Regions").observeSingleEvent(of: .value) { snapshot in
                     
                     if let tempDic : Dictionary = snapshot.value as? Dictionary<String,Any> {
                         
                         var isRegion = false
-                        //var regionID: String?
+                        
                         var hstryHotspotRegionList = [[String: Any]]()
-
+                        
+                        ///
+                        /// Check for all regions that contain the image coordinates
+                        ///
                         for key in tempDic.keys {
                             let selectedDic = tempDic[key] as! Dictionary<String,Any>
                             let latittude = selectedDic["Latitude"] as! Double
                             let longitude = selectedDic["Longitude"] as! Double
 
-//                            let innerRadius  = UserDefaults.standard.double(forKey: AppDelegate.innerRadiusKey)
-                            let region = CLCircularRegion(center: CLLocationCoordinate2D(latitude: latittude, longitude: longitude), radius: (AppDelegate.localGPSRadius * 2.0), identifier: "test")
+                            let region = CLCircularRegion(center: CLLocationCoordinate2D(latitude: latittude, longitude: longitude), radius: (AppDelegate.localGPSRadius), identifier: "test")
                             
                             if region.contains(latestLocation.coordinate) {
                                 hstryHotspotRegionList.append(selectedDic)
@@ -191,16 +193,20 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, A
                                 //break
                             }
                         }
+                        
+                        ///
+                        /// Find the nearest region to the image click location from the list of regions in which the image location falls in
+                        ///
                         if isRegion {
-                            // Region Exist
+                            /// Region Exist
                             if let selctedRgionID = self.appDelegate.locationServiceObject.minimumDistanceBetweenCoordinates(arrRegions: hstryHotspotRegionList,currentLocation: latestLocation) {
                                 self.saveImage(rid: selctedRgionID, imageURL: imageURL)
                             }
                         } else {
                             let uuid = self.generateUuid()
                             AppDelegate.ref.child("Regions").childByAutoId().setValue([
-                                "Latitude"      : lat,
-                                "Longitude"    : longi,
+                                "Latitude"      : imageLatitude,
+                                "Longitude"    : imageLongitide,
                                 "timestamp"     : NSDate().timeIntervalSince1970,
                                 "rid"       : uuid
                             ]) { [weak self] (error:Error?, ref:DatabaseReference) in
@@ -210,8 +216,6 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, A
                                     print("Region can not be saved: \(error).")
                                 } else {
                                     self?.photoPreviewView.isHidden = true
-                                    let innerRadius  = UserDefaults.standard.double(forKey: AppDelegate.innerRadiusKey)
-//                                    self?.locationServiceObject.createRegion(coordinate: CLLocationCoordinate2D(latitude: lat, longitude: longi), radius: innerRadius, regionName: uuid)
                                     self?.saveImage(rid: uuid, imageURL: imageURL)
                                     print("Region saved successfully!")
                                 }
@@ -220,8 +224,8 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, A
                     } else {
                         let uuid = self.generateUuid()
                         AppDelegate.ref.child("Regions").childByAutoId().setValue([
-                            "Latitude"      : lat,
-                            "Longitude"    : longi,
+                            "Latitude"      : imageLatitude,
+                            "Longitude"    : imageLongitide,
                             "timestamp"     : NSDate().timeIntervalSince1970,
                             "rid"       : uuid
                         ]) {
