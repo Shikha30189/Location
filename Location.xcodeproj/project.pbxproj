@@ -8,23 +8,23 @@
 
 /* Begin PBXBuildFile section */
 		53E5927C57BC1D104C2221E8 /* Pods_Location_LocationUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 747606B5AFAA12ADD214CC32 /* Pods_Location_LocationUITests.framework */; };
+		592BDD262723355800FFA8E0 /* CameraViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 592BDD202723355800FFA8E0 /* CameraViewController.swift */; };
+		592BDD272723355800FFA8E0 /* GalleryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 592BDD212723355800FFA8E0 /* GalleryViewController.swift */; };
+		592BDD282723355800FFA8E0 /* LocationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 592BDD222723355800FFA8E0 /* LocationViewController.swift */; };
+		592BDD292723355800FFA8E0 /* RadiusViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 592BDD232723355800FFA8E0 /* RadiusViewController.swift */; };
+		592BDD2A2723355800FFA8E0 /* HomeTabbarControllerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 592BDD242723355800FFA8E0 /* HomeTabbarControllerViewController.swift */; };
+		592BDD2B2723355800FFA8E0 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 592BDD252723355800FFA8E0 /* ViewController.swift */; };
+		592BDD2F272335AE00FFA8E0 /* LocationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 592BDD2D272335AE00FFA8E0 /* LocationService.swift */; };
+		592BDD30272335AE00FFA8E0 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 592BDD2E272335AE00FFA8E0 /* Extensions.swift */; };
 		75C89EB97353BFA8900AB644 /* Pods_LocationTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 834E0380303DB22C99ACAFC3 /* Pods_LocationTests.framework */; };
 		7A68E08DBF9422472A12C2FE /* Pods_Location.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E8159315876F137AC0744AF3 /* Pods_Location.framework */; };
 		A71A49AB26981FE80023CF5D /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A71A49AA26981FE80023CF5D /* AppDelegate.swift */; };
-		A71A49AF26981FE80023CF5D /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A71A49AE26981FE80023CF5D /* ViewController.swift */; };
 		A71A49B226981FE80023CF5D /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A71A49B026981FE80023CF5D /* Main.storyboard */; };
 		A71A49B426981FE90023CF5D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A71A49B326981FE90023CF5D /* Assets.xcassets */; };
 		A71A49B726981FE90023CF5D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A71A49B526981FE90023CF5D /* LaunchScreen.storyboard */; };
 		A71A49C226981FE90023CF5D /* LocationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A71A49C126981FE90023CF5D /* LocationTests.swift */; };
 		A71A49CD26981FE90023CF5D /* LocationUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A71A49CC26981FE90023CF5D /* LocationUITests.swift */; };
-		A71A4A1B26AF22680023CF5D /* CameraViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A71A4A1A26AF22680023CF5D /* CameraViewController.swift */; };
-		A71A4A1D26AF22770023CF5D /* LocationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A71A4A1C26AF22770023CF5D /* LocationViewController.swift */; };
-		A71A4A1F26AF281D0023CF5D /* LocationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A71A4A1E26AF281D0023CF5D /* LocationService.swift */; };
-		A72571A126B63C21008F2152 /* HomeTabbarControllerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A72571A026B63C21008F2152 /* HomeTabbarControllerViewController.swift */; };
 		A72571A326B7A7B6008F2152 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = A72571A226B7A7B6008F2152 /* GoogleService-Info.plist */; };
-		A72571A526BAB67C008F2152 /* GalleryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A72571A426BAB67C008F2152 /* GalleryViewController.swift */; };
-		A72571C726CB67F0008F2152 /* AsyncTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = A72571C626CB67EF008F2152 /* AsyncTask.swift */; };
-		A72571E926F1C916008F2152 /* RadiusViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A72571E826F1C916008F2152 /* RadiusViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -47,13 +47,20 @@
 /* Begin PBXFileReference section */
 		2683F402069562688C94A21B /* Pods-Location.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Location.release.xcconfig"; path = "Target Support Files/Pods-Location/Pods-Location.release.xcconfig"; sourceTree = "<group>"; };
 		5216BFF8C2F29506AE7DF3C7 /* Pods-Location.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Location.debug.xcconfig"; path = "Target Support Files/Pods-Location/Pods-Location.debug.xcconfig"; sourceTree = "<group>"; };
+		592BDD202723355800FFA8E0 /* CameraViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CameraViewController.swift; sourceTree = "<group>"; };
+		592BDD212723355800FFA8E0 /* GalleryViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GalleryViewController.swift; sourceTree = "<group>"; };
+		592BDD222723355800FFA8E0 /* LocationViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocationViewController.swift; sourceTree = "<group>"; };
+		592BDD232723355800FFA8E0 /* RadiusViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RadiusViewController.swift; sourceTree = "<group>"; };
+		592BDD242723355800FFA8E0 /* HomeTabbarControllerViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HomeTabbarControllerViewController.swift; sourceTree = "<group>"; };
+		592BDD252723355800FFA8E0 /* ViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		592BDD2D272335AE00FFA8E0 /* LocationService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocationService.swift; sourceTree = "<group>"; };
+		592BDD2E272335AE00FFA8E0 /* Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		60A33163EEFEEDADA75E813F /* Pods-LocationTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-LocationTests.release.xcconfig"; path = "Target Support Files/Pods-LocationTests/Pods-LocationTests.release.xcconfig"; sourceTree = "<group>"; };
 		747606B5AFAA12ADD214CC32 /* Pods_Location_LocationUITests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Location_LocationUITests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		834E0380303DB22C99ACAFC3 /* Pods_LocationTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_LocationTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		91E384F3453DE488A376EFA4 /* Pods-Location-LocationUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Location-LocationUITests.debug.xcconfig"; path = "Target Support Files/Pods-Location-LocationUITests/Pods-Location-LocationUITests.debug.xcconfig"; sourceTree = "<group>"; };
 		A71A49A726981FE80023CF5D /* HSTRY.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = HSTRY.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A71A49AA26981FE80023CF5D /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		A71A49AE26981FE80023CF5D /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		A71A49B126981FE80023CF5D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		A71A49B326981FE90023CF5D /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		A71A49B626981FE90023CF5D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -64,14 +71,7 @@
 		A71A49C826981FE90023CF5D /* LocationUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = LocationUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		A71A49CC26981FE90023CF5D /* LocationUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationUITests.swift; sourceTree = "<group>"; };
 		A71A49CE26981FE90023CF5D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		A71A4A1A26AF22680023CF5D /* CameraViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraViewController.swift; sourceTree = "<group>"; };
-		A71A4A1C26AF22770023CF5D /* LocationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationViewController.swift; sourceTree = "<group>"; };
-		A71A4A1E26AF281D0023CF5D /* LocationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationService.swift; sourceTree = "<group>"; };
-		A72571A026B63C21008F2152 /* HomeTabbarControllerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeTabbarControllerViewController.swift; sourceTree = "<group>"; };
 		A72571A226B7A7B6008F2152 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
-		A72571A426BAB67C008F2152 /* GalleryViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GalleryViewController.swift; sourceTree = "<group>"; };
-		A72571C626CB67EF008F2152 /* AsyncTask.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AsyncTask.swift; sourceTree = "<group>"; };
-		A72571E826F1C916008F2152 /* RadiusViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RadiusViewController.swift; sourceTree = "<group>"; };
 		BC1EC46854DFDE79D273D751 /* Pods-Location-LocationUITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Location-LocationUITests.release.xcconfig"; path = "Target Support Files/Pods-Location-LocationUITests/Pods-Location-LocationUITests.release.xcconfig"; sourceTree = "<group>"; };
 		C23CE7EE51836DB1B1D00D59 /* Pods-LocationTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-LocationTests.debug.xcconfig"; path = "Target Support Files/Pods-LocationTests/Pods-LocationTests.debug.xcconfig"; sourceTree = "<group>"; };
 		E8159315876F137AC0744AF3 /* Pods_Location.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Location.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -115,6 +115,37 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		592BDD1E272334BF00FFA8E0 /* Modules */ = {
+			isa = PBXGroup;
+			children = (
+				592BDD2C2723357600FFA8E0 /* Utilities */,
+				592BDD1F272334E800FFA8E0 /* Scenes */,
+			);
+			path = Modules;
+			sourceTree = "<group>";
+		};
+		592BDD1F272334E800FFA8E0 /* Scenes */ = {
+			isa = PBXGroup;
+			children = (
+				592BDD202723355800FFA8E0 /* CameraViewController.swift */,
+				592BDD212723355800FFA8E0 /* GalleryViewController.swift */,
+				592BDD242723355800FFA8E0 /* HomeTabbarControllerViewController.swift */,
+				592BDD222723355800FFA8E0 /* LocationViewController.swift */,
+				592BDD232723355800FFA8E0 /* RadiusViewController.swift */,
+				592BDD252723355800FFA8E0 /* ViewController.swift */,
+			);
+			path = Scenes;
+			sourceTree = "<group>";
+		};
+		592BDD2C2723357600FFA8E0 /* Utilities */ = {
+			isa = PBXGroup;
+			children = (
+				592BDD2E272335AE00FFA8E0 /* Extensions.swift */,
+				592BDD2D272335AE00FFA8E0 /* LocationService.swift */,
+			);
+			path = Utilities;
+			sourceTree = "<group>";
+		};
 		A71A499E26981FE80023CF5D = {
 			isa = PBXGroup;
 			children = (
@@ -140,20 +171,13 @@
 		A71A49A926981FE80023CF5D /* Location */ = {
 			isa = PBXGroup;
 			children = (
-				A72571C626CB67EF008F2152 /* AsyncTask.swift */,
+				592BDD1E272334BF00FFA8E0 /* Modules */,
 				A71A49AA26981FE80023CF5D /* AppDelegate.swift */,
-				A71A49AE26981FE80023CF5D /* ViewController.swift */,
 				A71A49B026981FE80023CF5D /* Main.storyboard */,
-				A72571A026B63C21008F2152 /* HomeTabbarControllerViewController.swift */,
 				A71A49B326981FE90023CF5D /* Assets.xcassets */,
 				A71A49B526981FE90023CF5D /* LaunchScreen.storyboard */,
 				A71A49B826981FE90023CF5D /* Info.plist */,
-				A71A4A1A26AF22680023CF5D /* CameraViewController.swift */,
-				A71A4A1C26AF22770023CF5D /* LocationViewController.swift */,
-				A71A4A1E26AF281D0023CF5D /* LocationService.swift */,
 				A72571A226B7A7B6008F2152 /* GoogleService-Info.plist */,
-				A72571A426BAB67C008F2152 /* GalleryViewController.swift */,
-				A72571E826F1C916008F2152 /* RadiusViewController.swift */,
 			);
 			path = Location;
 			sourceTree = "<group>";
@@ -428,15 +452,15 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A71A49AF26981FE80023CF5D /* ViewController.swift in Sources */,
-				A72571A526BAB67C008F2152 /* GalleryViewController.swift in Sources */,
-				A72571A126B63C21008F2152 /* HomeTabbarControllerViewController.swift in Sources */,
-				A72571C726CB67F0008F2152 /* AsyncTask.swift in Sources */,
-				A72571E926F1C916008F2152 /* RadiusViewController.swift in Sources */,
+				592BDD292723355800FFA8E0 /* RadiusViewController.swift in Sources */,
+				592BDD30272335AE00FFA8E0 /* Extensions.swift in Sources */,
+				592BDD262723355800FFA8E0 /* CameraViewController.swift in Sources */,
+				592BDD2F272335AE00FFA8E0 /* LocationService.swift in Sources */,
+				592BDD2B2723355800FFA8E0 /* ViewController.swift in Sources */,
+				592BDD2A2723355800FFA8E0 /* HomeTabbarControllerViewController.swift in Sources */,
+				592BDD272723355800FFA8E0 /* GalleryViewController.swift in Sources */,
+				592BDD282723355800FFA8E0 /* LocationViewController.swift in Sources */,
 				A71A49AB26981FE80023CF5D /* AppDelegate.swift in Sources */,
-				A71A4A1F26AF281D0023CF5D /* LocationService.swift in Sources */,
-				A71A4A1B26AF22680023CF5D /* CameraViewController.swift in Sources */,
-				A71A4A1D26AF22770023CF5D /* LocationViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
