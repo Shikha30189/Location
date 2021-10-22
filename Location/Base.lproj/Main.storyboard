@@ -107,7 +107,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="d0c-aL-gux" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1999" y="-234"/>
+            <point key="canvasLocation" x="-1168" y="1442"/>
         </scene>
         <!--Camera View Controller-->
         <scene sceneID="CGn-IN-anb">
@@ -207,7 +207,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="8ll-gq-sXk" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1999" y="477"/>
+            <point key="canvasLocation" x="-2459" y="1442"/>
         </scene>
         <!--Radius View Controller-->
         <scene sceneID="v9J-h4-xUt">
@@ -218,22 +218,22 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" spacing="32" translatesAutoresizingMaskIntoConstraints="NO" id="q0X-Q2-uF7">
-                                <rect key="frame" x="0.0" y="88" width="414" height="140"/>
+                                <rect key="frame" x="0.0" y="280.5" width="414" height="140"/>
                                 <subviews>
                                     <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" alignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="BVD-T6-3x9">
-                                        <rect key="frame" x="16" y="0.0" width="382" height="76"/>
+                                        <rect key="frame" x="42" y="0.0" width="330" height="76"/>
                                         <subviews>
                                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="fillEqually" alignment="center" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="HKe-Fo-VCT">
-                                                <rect key="frame" x="0.0" y="0.0" width="191" height="76"/>
+                                                <rect key="frame" x="0.0" y="0.0" width="165" height="76"/>
                                                 <subviews>
-                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="HSTRY Region Radius" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="gLp-ku-0v4">
-                                                        <rect key="frame" x="12" y="0.0" width="167" height="34"/>
+                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="HSTRY Radius" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="gLp-ku-0v4">
+                                                        <rect key="frame" x="27.5" y="0.0" width="110" height="34"/>
                                                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                         <nil key="textColor"/>
                                                         <nil key="highlightedColor"/>
                                                     </label>
                                                     <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="0lK-1a-W7C" userLabel="Round Style Text Field - InnerRadius">
-                                                        <rect key="frame" x="45.5" y="42" width="100" height="34"/>
+                                                        <rect key="frame" x="32.5" y="42" width="100" height="34"/>
                                                         <constraints>
                                                             <constraint firstAttribute="width" constant="100" id="Apq-cU-bGY"/>
                                                         </constraints>
@@ -243,16 +243,16 @@
                                                 </subviews>
                                             </stackView>
                                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="fillEqually" alignment="center" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="u7c-3P-byl">
-                                                <rect key="frame" x="191" y="0.0" width="191" height="76"/>
+                                                <rect key="frame" x="165" y="0.0" width="165" height="76"/>
                                                 <subviews>
-                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Location Re-fetch Radius" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="e8I-le-0wo">
-                                                        <rect key="frame" x="0.0" y="0.0" width="191" height="34"/>
+                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="BG Monitoring Radius" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="e8I-le-0wo">
+                                                        <rect key="frame" x="0.0" y="0.0" width="165" height="34"/>
                                                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                         <nil key="textColor"/>
                                                         <nil key="highlightedColor"/>
                                                     </label>
                                                     <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="9hX-o8-O4S" userLabel="Round Style Text Field - Outer Radius">
-                                                        <rect key="frame" x="45.5" y="42" width="100" height="34"/>
+                                                        <rect key="frame" x="32.5" y="42" width="100" height="34"/>
                                                         <constraints>
                                                             <constraint firstAttribute="width" constant="100" id="4Ps-Qq-fgS"/>
                                                         </constraints>
@@ -277,7 +277,7 @@
                         <viewLayoutGuide key="safeArea" id="7j7-GE-DqG"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
-                            <constraint firstItem="q0X-Q2-uF7" firstAttribute="top" secondItem="7j7-GE-DqG" secondAttribute="top" id="sWu-5f-hRd"/>
+                            <constraint firstItem="q0X-Q2-uF7" firstAttribute="centerY" secondItem="7j7-GE-DqG" secondAttribute="centerY" constant="-100" id="PFR-Ih-J1v"/>
                             <constraint firstItem="q0X-Q2-uF7" firstAttribute="leading" secondItem="7j7-GE-DqG" secondAttribute="leading" id="vbZ-hT-PfF"/>
                             <constraint firstItem="7j7-GE-DqG" firstAttribute="trailing" secondItem="q0X-Q2-uF7" secondAttribute="trailing" id="viV-Zd-xm9"/>
                         </constraints>
@@ -293,7 +293,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="I9g-Nm-Ege" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1572" y="1220"/>
+            <point key="canvasLocation" x="-65" y="1442"/>
         </scene>
         <!--Home Tabbar Controller View Controller-->
         <scene sceneID="nFr-gR-znI">
@@ -323,11 +323,12 @@
                     <connections>
                         <segue destination="Jat-LV-tQU" kind="relationship" relationship="viewControllers" id="c0h-Jg-jsd"/>
                         <segue destination="Yn1-po-Nib" kind="relationship" relationship="viewControllers" id="CCs-nQ-WlT"/>
+                        <segue destination="P72-01-yAh" kind="relationship" relationship="viewControllers" id="YM3-o5-5k2"/>
                     </connections>
                 </tabBarController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="RrF-hD-keJ" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-1168" y="-70"/>
+            <point key="canvasLocation" x="-1168" y="-92"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="fOg-6b-wXy">
@@ -348,7 +349,7 @@
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="0hr-lx-kna" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="939.13043478260875" y="-166.07142857142856"/>
+            <point key="canvasLocation" x="-1168" y="682"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="urQ-Lr-MEq">
@@ -369,7 +370,7 @@
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="ZdR-A3-guy" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="896" y="536"/>
+            <point key="canvasLocation" x="-2459" y="683"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="ixz-Eq-Apc">
@@ -388,7 +389,7 @@
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="j4e-na-04Q" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="313" y="1158"/>
+            <point key="canvasLocation" x="-65" y="682"/>
         </scene>
         <!-- -->
         <scene sceneID="XWz-Ed-3dB">
@@ -407,7 +408,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="S41-gN-lbF" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-1551" y="839"/>
+            <point key="canvasLocation" x="103" y="-881"/>
         </scene>
     </scenes>
     <resources>
