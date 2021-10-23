@@ -37,7 +37,6 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, A
         clickPhoto.clipsToBounds = true
 
         locationServiceObject = appDelegate.locationServiceObject
-        locationServiceObject.getLocation()
     }
     
 
@@ -162,7 +161,16 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, A
     }
     
     func saveData(imageURL: String) {
-        locationServiceObject.getLocation { result in
+        locationServiceObject.stopContinuousLocationUpdates()
+        
+        locationServiceObject.getLocation { [weak self] result in
+            
+            guard let strongSelf = self else {
+                return
+            }
+            
+            strongSelf.locationServiceObject.startContinuousLocationUpdates()
+            
             if case let .success(latestLocation) = result {
                 
                 let imageLatitude = latestLocation.coordinate.latitude
@@ -199,44 +207,50 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, A
                         ///
                         if isRegion {
                             /// Region Exist
-                            if let selctedRgionID = self.appDelegate.locationServiceObject.minimumDistanceBetweenCoordinates(arrRegions: hstryHotspotRegionList,currentLocation: latestLocation) {
-                                self.saveImage(rid: selctedRgionID, imageURL: imageURL)
+                            if let selctedRgionID = strongSelf.appDelegate.locationServiceObject.minimumDistanceBetweenCoordinates(arrRegions: hstryHotspotRegionList,currentLocation: latestLocation) {
+                                strongSelf.saveImage(rid: selctedRgionID, imageURL: imageURL)
                             }
                         } else {
-                            let uuid = self.generateUuid()
-                            AppDelegate.ref.child("Regions").childByAutoId().setValue([
+                            let uuid = strongSelf.generateUuid()
+                            let regionObject = [
                                 "Latitude"      : imageLatitude,
                                 "Longitude"    : imageLongitide,
                                 "timestamp"     : NSDate().timeIntervalSince1970,
                                 "rid"       : uuid
-                            ]) { [weak self] (error:Error?, ref:DatabaseReference) in
+                            ] as [String : Any]
+                            
+                            AppDelegate.ref.child("Regions").childByAutoId().setValue(regionObject) { [weak self] (error:Error?, ref:DatabaseReference) in
                                 self?.removeSpinner()
                                 if let error = error {
                                     self?.showErrorAlert(message: "Failed to save region: \(error).")
                                     print("Region can not be saved: \(error).")
                                 } else {
                                     self?.photoPreviewView.isHidden = true
+                                    self?.locationServiceObject.filteredRegions.append(regionObject)
                                     self?.saveImage(rid: uuid, imageURL: imageURL)
                                     print("Region saved successfully!")
                                 }
                             }
                         }
                     } else {
-                        let uuid = self.generateUuid()
-                        AppDelegate.ref.child("Regions").childByAutoId().setValue([
+                        let uuid = strongSelf.generateUuid()
+                        let regionObject = [
                             "Latitude"      : imageLatitude,
                             "Longitude"    : imageLongitide,
                             "timestamp"     : NSDate().timeIntervalSince1970,
                             "rid"       : uuid
-                        ]) {
+                        ] as [String : Any]
+                        
+                        AppDelegate.ref.child("Regions").childByAutoId().setValue(regionObject) {
                             (error:Error?, ref:DatabaseReference) in
-                            self.removeSpinner()
+                            strongSelf.removeSpinner()
                             if let error = error {
-                                self.showErrorAlert(message: "Failed to save region: \(error).")
+                                strongSelf.showErrorAlert(message: "Failed to save region: \(error).")
                                 print("Region can not be saved: \(error).")
                             } else {
-                                self.photoPreviewView.isHidden = true
-                                self.saveImage(rid: uuid, imageURL: imageURL)
+                                strongSelf.photoPreviewView.isHidden = true
+                                self?.locationServiceObject.filteredRegions.append(regionObject)
+                                strongSelf.saveImage(rid: uuid, imageURL: imageURL)
                                 print("Region saved successfully!")
                             }
                         }

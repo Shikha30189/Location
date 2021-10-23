@@ -10,23 +10,11 @@ import MapKit
 
 class LocationViewController: UIViewController, MKMapViewDelegate {
     @IBOutlet var mapView: MKMapView!
-    var locationServiceObject: LocationService!
-
     
     override func viewDidLoad() {
         super.viewDidLoad()
         self.mapView.delegate =  self
         self.mapView.showsUserLocation = true
-        
-        let appDelegate = UIApplication.shared.delegate as! AppDelegate
-        
-        locationServiceObject = appDelegate.locationServiceObject
-        locationServiceObject.getLocation() { [weak locationServiceObject] result in
-            if locationServiceObject?.manager.monitoredRegions.count == 0,
-               case let .success(latestLocation) = result {
-                locationServiceObject?.initialiseAllRegions(with: latestLocation.coordinate)
-            }
-        }
     }
     
     override func viewWillAppear(_ animated: Bool) {

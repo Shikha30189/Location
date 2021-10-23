@@ -11,6 +11,7 @@ import CoreLocation
 
 class ViewController: UIViewController, UNUserNotificationCenterDelegate {
     var locationServiceObject: LocationService!
+    var isChangingAuthorisationStatus = false
     
     @IBOutlet weak var locationTextView: UITextView!
     @IBOutlet weak var textField: UITextField!
@@ -22,28 +23,40 @@ class ViewController: UIViewController, UNUserNotificationCenterDelegate {
         let appDelegate = UIApplication.shared.delegate as! AppDelegate
         locationServiceObject = appDelegate.locationServiceObject
         
-        locationServiceObject.didChangeStatus = { status in
+        locationServiceObject.didChangeStatus = { [weak self] status in
+            
+            guard let strongSelf = self else {
+                return
+            }
+            
             switch status {
             case .authorizedAlways:
-                self.locationServiceObject.getLocation()
+                if  strongSelf.isChangingAuthorisationStatus && UIApplication.shared.applicationState != .background {
+                    strongSelf.locationServiceObject.onAppForeground()
+                }
                 let mainStoryboard = UIStoryboard(name: "Main", bundle: nil)
                 let homeController = mainStoryboard.instantiateViewController(withIdentifier: "HomeViewController")
                 appDelegate.window!.rootViewController = homeController
                 
             case .authorizedWhenInUse:
-                self.locationServiceObject.requestLocationAlwaysAuthorization()
+                strongSelf.isChangingAuthorisationStatus = true
+                strongSelf.locationServiceObject.requestLocationAlwaysAuthorization()
                 
             case .denied:
-                self.locationServiceObject.requestLocationAuthorization()
+                strongSelf.isChangingAuthorisationStatus = true
+                strongSelf.locationServiceObject.requestLocationAuthorization()
                 
             case .notDetermined:
-                self.locationServiceObject.requestLocationAuthorization()
+                strongSelf.isChangingAuthorisationStatus = true
+                strongSelf.locationServiceObject.requestLocationAuthorization()
                 
             case .restricted:
-                self.locationServiceObject.requestLocationAuthorization()
+                strongSelf.isChangingAuthorisationStatus = true
+                strongSelf.locationServiceObject.requestLocationAuthorization()
                 
             @unknown default:
-                self.locationServiceObject.requestLocationAuthorization()
+                strongSelf.isChangingAuthorisationStatus = true
+                strongSelf.locationServiceObject.requestLocationAuthorization()
             }
         }
         

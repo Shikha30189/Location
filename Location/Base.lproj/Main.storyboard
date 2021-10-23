@@ -218,10 +218,29 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" spacing="32" translatesAutoresizingMaskIntoConstraints="NO" id="q0X-Q2-uF7">
-                                <rect key="frame" x="0.0" y="280.5" width="414" height="140"/>
+                                <rect key="frame" x="0.0" y="88" width="414" height="248"/>
                                 <subviews>
+                                    <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="fillEqually" alignment="center" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="pzU-vS-C60">
+                                        <rect key="frame" x="69.5" y="0.0" width="275" height="76"/>
+                                        <subviews>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="HSTRY Foreground Clubbing Radius" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="F7M-pt-NA5">
+                                                <rect key="frame" x="0.0" y="0.0" width="275" height="34"/>
+                                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                <nil key="textColor"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                            <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="6bg-1R-cdj" userLabel="Round Style Text Field - InnerRadius">
+                                                <rect key="frame" x="87.5" y="42" width="100" height="34"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="width" constant="100" id="I1c-cY-iH2"/>
+                                                </constraints>
+                                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                                <textInputTraits key="textInputTraits"/>
+                                            </textField>
+                                        </subviews>
+                                    </stackView>
                                     <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" alignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="BVD-T6-3x9">
-                                        <rect key="frame" x="42" y="0.0" width="330" height="76"/>
+                                        <rect key="frame" x="42" y="108" width="330" height="76"/>
                                         <subviews>
                                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="fillEqually" alignment="center" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="HKe-Fo-VCT">
                                                 <rect key="frame" x="0.0" y="0.0" width="165" height="76"/>
@@ -264,7 +283,7 @@
                                         </subviews>
                                     </stackView>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="VRQ-IV-KWr">
-                                        <rect key="frame" x="129.5" y="108" width="155" height="32"/>
+                                        <rect key="frame" x="129.5" y="216" width="155" height="32"/>
                                         <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="16"/>
                                         <state key="normal" title="Save and Reinitialise"/>
                                         <connections>
@@ -277,7 +296,7 @@
                         <viewLayoutGuide key="safeArea" id="7j7-GE-DqG"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
-                            <constraint firstItem="q0X-Q2-uF7" firstAttribute="centerY" secondItem="7j7-GE-DqG" secondAttribute="centerY" constant="-100" id="PFR-Ih-J1v"/>
+                            <constraint firstItem="q0X-Q2-uF7" firstAttribute="top" secondItem="7j7-GE-DqG" secondAttribute="top" id="vN5-cB-3UU"/>
                             <constraint firstItem="q0X-Q2-uF7" firstAttribute="leading" secondItem="7j7-GE-DqG" secondAttribute="leading" id="vbZ-hT-PfF"/>
                             <constraint firstItem="7j7-GE-DqG" firstAttribute="trailing" secondItem="q0X-Q2-uF7" secondAttribute="trailing" id="viV-Zd-xm9"/>
                         </constraints>
@@ -287,6 +306,7 @@
                     </view>
                     <navigationItem key="navigationItem" id="aUl-cg-NVI"/>
                     <connections>
+                        <outlet property="foregroundTextField" destination="6bg-1R-cdj" id="S3m-PJ-Nbc"/>
                         <outlet property="innerTextField" destination="0lK-1a-W7C" id="lw3-BS-aPQ"/>
                         <outlet property="outerTextField" destination="9hX-o8-O4S" id="yUG-ga-AGv"/>
                     </connections>
